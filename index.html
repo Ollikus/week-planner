@@ -4,6 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>План на неделю</title>
+  <script>
+    // Применяем сохранённую тему до отрисовки, чтобы не было мигания
+    try {
+      const t = localStorage.getItem("soft-week-theme");
+      if (t) document.documentElement.dataset.theme = t;
+    } catch {}
+  </script>
   <style>
     :root {
       color-scheme: light;
@@ -20,10 +27,33 @@
       --butter: #f5e8bd;
       --sage: #dce8ca;
       --focus: #796cbe;
+      --check-bg: #ffffff;
+      --check-stroke: #4f7462;
+      --done-base: #ffffff;
       --radius: 0.5rem;
       --gap: clamp(0.625rem, 1.6cqi, 0.9rem);
       --control: clamp(2.75rem, 5.6cqi, 3.25rem);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #e9e7f0;
+      --muted: #a6a2b3;
+      --line: rgba(255, 255, 255, 0.12);
+      --paper: rgba(42, 40, 52, 0.72);
+      --paper-strong: rgba(48, 46, 60, 0.92);
+      --mint: #7fae9b;
+      --peach: #d6a585;
+      --lavender: #a59ccf;
+      --sky: #8fb3cf;
+      --rose: #cf9aae;
+      --butter: #cdbb7d;
+      --sage: #a6b98a;
+      --focus: #9d90e0;
+      --check-bg: rgba(255, 255, 255, 0.1);
+      --check-stroke: #bfe6d3;
+      --done-base: #2a2834;
     }
 
     * {
@@ -38,6 +68,14 @@
         radial-gradient(circle at 15% 12%, rgba(207, 233, 222, 0.9), transparent 28rem),
         radial-gradient(circle at 88% 18%, rgba(247, 216, 199, 0.85), transparent 24rem),
         linear-gradient(135deg, #fbf8f2 0%, #eef6f1 46%, #f7f0f4 100%);
+      transition: background 240ms ease, color 240ms ease;
+    }
+
+    :root[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 15% 12%, rgba(127, 174, 155, 0.16), transparent 28rem),
+        radial-gradient(circle at 88% 18%, rgba(214, 165, 133, 0.14), transparent 24rem),
+        linear-gradient(135deg, #1c1b22 0%, #1f242a 46%, #221d28 100%);
     }
 
     button,
@@ -75,8 +113,14 @@
       line-height: 1.5;
     }
 
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      min-width: min(100%, 15rem);
+    }
+
     .summary {
-      min-width: min(100%, 12rem);
       padding: clamp(0.875rem, 2cqi, 1.125rem);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -96,6 +140,32 @@
       margin-top: 0.45rem;
       color: var(--muted);
       font-size: clamp(0.85rem, 1.4cqi, 0.95rem);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--gap);
+    }
+
+    .ghost-btn {
+      flex: 1 1 auto;
+      height: var(--control);
+      padding: 0 clamp(0.85rem, 1.8cqi, 1.1rem);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: clamp(0.82rem, 1.4cqi, 0.92rem);
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .ghost-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(121, 108, 190, 0.45);
+      background: var(--paper-strong);
     }
 
     .add-panel {
@@ -122,6 +192,11 @@
       font-size: clamp(0.95rem, 1.6cqi, 1rem);
     }
 
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] input[type="text"] {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
     select {
       padding: 0 clamp(0.7rem, 1.5cqi, 0.9rem);
     }
@@ -136,8 +211,7 @@
       box-shadow: 0 0 0 0.25rem rgba(121, 108, 190, 0.12);
     }
 
-    .add-btn,
-    .icon-btn {
+    .add-btn {
       display: inline-grid;
       place-items: center;
       border: 0;
@@ -146,9 +220,6 @@
       background: #6f8f7f;
       cursor: pointer;
       transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
-    }
-
-    .add-btn {
       min-width: min(100%, 8rem);
       height: var(--control);
       padding: 0 clamp(1rem, 2cqi, 1.25rem);
@@ -157,8 +228,7 @@
       box-shadow: 0 0.625rem 1.5rem rgba(99, 129, 113, 0.24);
     }
 
-    .add-btn:hover,
-    .icon-btn:hover {
+    .add-btn:hover {
       transform: translateY(-1px);
       background: #637f73;
     }
@@ -188,6 +258,13 @@
     .day:nth-child(6) { --accent: var(--butter); }
     .day:nth-child(7) { --accent: var(--sage); }
 
+    .day.today {
+      border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+      box-shadow:
+        0 0 0 0.14rem color-mix(in srgb, var(--accent) 60%, transparent),
+        0 1rem 2.75rem rgba(82, 78, 93, 0.09);
+    }
+
     .day-head {
       display: flex;
       justify-content: space-between;
@@ -200,8 +277,8 @@
 
     .day-title {
       display: flex;
-      align-items: center;
-      gap: 0.55rem;
+      align-items: baseline;
+      gap: 0.5rem;
       min-width: 0;
       margin: 0;
       font-size: clamp(0.98rem, 1.65cqi, 1.1rem);
@@ -211,15 +288,70 @@
       width: clamp(0.75rem, 1.4cqi, 0.9rem);
       height: clamp(0.75rem, 1.4cqi, 0.9rem);
       flex: 0 0 auto;
+      align-self: center;
       border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 0 0.31rem rgba(255, 255, 255, 0.7);
     }
 
-    .count {
+    :root[data-theme="dark"] .mark {
+      box-shadow: 0 0 0 0.31rem rgba(255, 255, 255, 0.08);
+    }
+
+    .day-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .day-date {
       flex: 0 0 auto;
       color: var(--muted);
+      font-size: clamp(0.76rem, 1.3cqi, 0.86rem);
+      font-weight: 500;
+    }
+
+    .day.today .day-date {
+      color: color-mix(in srgb, var(--ink) 70%, var(--accent));
+      font-weight: 700;
+    }
+
+    .day-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex: 0 0 auto;
+    }
+
+    .count {
+      color: var(--muted);
       font-size: clamp(0.8rem, 1.3cqi, 0.9rem);
+    }
+
+    .move {
+      display: grid;
+      place-items: center;
+      width: clamp(1.6rem, 3cqi, 1.85rem);
+      height: clamp(1.6rem, 3cqi, 1.85rem);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .move:hover {
+      transform: translateY(-1px);
+      color: var(--ink);
+      background: var(--paper-strong);
+      border-color: rgba(121, 108, 190, 0.4);
+    }
+
+    .move svg {
+      width: 1rem;
+      height: 1rem;
     }
 
     .tasks {
@@ -242,6 +374,11 @@
       --task-button: clamp(1.75rem, 3.4cqi, 2rem);
     }
 
+    :root[data-theme="dark"] .task {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     .task input {
       position: absolute;
       opacity: 0;
@@ -255,8 +392,12 @@
       height: var(--task-button);
       border: 1px solid rgba(82, 78, 93, 0.18);
       border-radius: 999px;
-      background: white;
+      background: var(--check-bg);
       cursor: pointer;
+    }
+
+    :root[data-theme="dark"] .check {
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .check svg,
@@ -267,17 +408,17 @@
 
     .check svg {
       opacity: 0;
-      stroke: #4f7462;
+      stroke: var(--check-stroke);
       stroke-width: 3;
     }
 
     .task.done {
-      background: color-mix(in srgb, var(--accent) 34%, white);
+      background: color-mix(in srgb, var(--accent) 34%, var(--done-base));
     }
 
     .task.done .check {
       border-color: transparent;
-      background: white;
+      background: var(--check-bg);
     }
 
     .task.done .check svg {
@@ -285,7 +426,7 @@
     }
 
     .task.done .text {
-      color: rgba(59, 58, 66, 0.58);
+      color: color-mix(in srgb, var(--ink) 55%, transparent);
       text-decoration: line-through;
     }
 
@@ -313,6 +454,15 @@
       background: rgba(255, 255, 255, 0.72);
     }
 
+    :root[data-theme="dark"] .delete {
+      color: #b6a8af;
+    }
+
+    :root[data-theme="dark"] .delete:hover {
+      color: #f0dde4;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
     .empty {
       display: grid;
       place-items: center;
@@ -325,13 +475,17 @@
       font-size: clamp(0.86rem, 1.45cqi, 0.95rem);
     }
 
+    :root[data-theme="dark"] .empty {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
     @media (max-width: 61.25rem) {
       header {
         align-items: stretch;
         flex-direction: column;
       }
 
-      .summary {
+      .panel {
         min-width: 0;
       }
     }
@@ -364,9 +518,16 @@
         <h1>План на неделю</h1>
         <p class="subtitle">Добавляй задачи по дням и отмечай готовое. Список сохраняется в этом браузере автоматически.</p>
       </div>
-      <div class="summary" aria-live="polite">
-        <strong id="progressNumber">0/0</strong>
-        <span id="progressText">Пока нет задач</span>
+      <div class="panel">
+        <div class="summary" aria-live="polite">
+          <strong id="progressNumber">0/0</strong>
+          <span id="progressText">Пока нет задач</span>
+        </div>
+        <div class="toolbar">
+          <button class="ghost-btn" id="themeToggle" type="button">🌙 Тёмная тема</button>
+          <button class="ghost-btn" id="clearDone" type="button">Очистить выполненные</button>
+          <button class="ghost-btn" id="clearWeek" type="button">Очистить неделю</button>
+        </div>
       </div>
     </header>
 
@@ -412,6 +573,8 @@
     ];
 
     const storageKey = "soft-week-todo-v1";
+    const themeKey = "soft-week-theme";
+
     const week = document.querySelector("#week");
     const form = document.querySelector("#taskForm");
     const daySelect = document.querySelector("#daySelect");
@@ -419,6 +582,9 @@
     const progressNumber = document.querySelector("#progressNumber");
     const progressText = document.querySelector("#progressText");
     const template = document.querySelector("#taskTemplate");
+    const themeToggle = document.querySelector("#themeToggle");
+    const clearDoneBtn = document.querySelector("#clearDone");
+    const clearWeekBtn = document.querySelector("#clearWeek");
 
     let tasks = loadTasks();
 
@@ -428,6 +594,9 @@
       option.textContent = day;
       daySelect.append(option);
     });
+
+    // По умолчанию выбираем сегодняшний день
+    daySelect.value = String(todayIndex());
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -439,7 +608,7 @@
       }
 
       tasks.push({
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
         day: Number(daySelect.value),
         title,
         done: false
@@ -449,6 +618,59 @@
       taskInput.focus();
       saveAndRender();
     });
+
+    clearDoneBtn.addEventListener("click", () => {
+      const doneCount = tasks.filter((task) => task.done).length;
+      if (doneCount === 0) return;
+      if (!confirm(`Удалить выполненные задачи (${doneCount})?`)) return;
+      tasks = tasks.filter((task) => !task.done);
+      saveAndRender();
+    });
+
+    clearWeekBtn.addEventListener("click", () => {
+      if (tasks.length === 0) return;
+      if (!confirm("Удалить все задачи недели? Это действие необратимо.")) return;
+      tasks = [];
+      saveAndRender();
+    });
+
+    themeToggle.addEventListener("click", () => {
+      const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      applyTheme(next);
+    });
+
+    applyTheme(document.documentElement.dataset.theme || localStorage.getItem(themeKey) || "light");
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      themeToggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
+      try {
+        localStorage.setItem(themeKey, theme);
+      } catch {}
+    }
+
+    function todayIndex() {
+      return (new Date().getDay() + 6) % 7;
+    }
+
+    function dateForIndex(index) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - todayIndex() + index);
+      return d;
+    }
+
+    function formatDate(d) {
+      return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
+    }
+
+    function moveIncomplete(index) {
+      const next = (index + 1) % 7;
+      tasks = tasks.map((task) =>
+        task.day === index && !task.done ? { ...task, day: next } : task
+      );
+      saveAndRender();
+    }
 
     function loadTasks() {
       try {
@@ -465,19 +687,42 @@
 
     function render() {
       week.replaceChildren();
+      const today = todayIndex();
 
       days.forEach((day, index) => {
         const dayTasks = tasks.filter((task) => task.day === index);
         const doneCount = dayTasks.filter((task) => task.done).length;
+        const pending = dayTasks.length - doneCount;
+        const nextDay = days[(index + 1) % 7];
+
         const section = document.createElement("section");
-        section.className = "day";
+        section.className = index === today ? "day today" : "day";
         section.innerHTML = `
           <div class="day-head">
-            <h2 class="day-title"><span class="mark"></span><span>${day}</span></h2>
-            <span class="count">${doneCount}/${dayTasks.length}</span>
+            <h2 class="day-title">
+              <span class="mark"></span>
+              <span class="day-name">${day}</span>
+              <span class="day-date">${formatDate(dateForIndex(index))}</span>
+            </h2>
+            <div class="day-tools">
+              ${pending > 0 ? `
+                <button class="move" type="button" title="Перенести невыполненное на ${nextDay}" aria-label="Перенести невыполненное на ${nextDay}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="M13 6l6 6-6 6"></path>
+                  </svg>
+                </button>
+              ` : ""}
+              <span class="count">${doneCount}/${dayTasks.length}</span>
+            </div>
           </div>
           <div class="tasks"></div>
         `;
+
+        const moveButton = section.querySelector(".move");
+        if (moveButton) {
+          moveButton.addEventListener("click", () => moveIncomplete(index));
+        }
 
         const list = section.querySelector(".tasks");
 
