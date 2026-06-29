@@ -20,6 +20,9 @@
       --butter: #f5e8bd;
       --sage: #dce8ca;
       --focus: #796cbe;
+      --radius: 0.5rem;
+      --gap: clamp(0.625rem, 1.6cqi, 0.9rem);
+      --control: clamp(2.75rem, 5.6cqi, 3.25rem);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -43,92 +46,94 @@
     }
 
     .app {
-      width: min(1180px, calc(100% - 32px));
+      container-type: inline-size;
+      width: min(73.75rem, calc(100% - clamp(1.25rem, 4cqi, 2rem)));
       margin: 0 auto;
-      padding: 34px 0 44px;
+      padding: clamp(1.375rem, 4.4cqi, 2.25rem) 0 clamp(2rem, 5cqi, 2.875rem);
     }
 
     header {
       display: flex;
       justify-content: space-between;
-      gap: 18px;
+      gap: clamp(1rem, 2.5cqi, 1.5rem);
       align-items: flex-end;
-      margin-bottom: 24px;
+      margin-bottom: clamp(1.125rem, 3cqi, 1.625rem);
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(2rem, 6vw, 4.6rem);
+      margin: 0 0 0.5rem;
+      font-size: clamp(2.2rem, 8cqi, 4.6rem);
       line-height: 0.95;
       letter-spacing: 0;
     }
 
     .subtitle {
       margin: 0;
-      max-width: 640px;
+      max-width: 40rem;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: clamp(0.95rem, 1.7cqi, 1.05rem);
       line-height: 1.5;
     }
 
     .summary {
-      min-width: 190px;
-      padding: 16px 18px;
+      min-width: min(100%, 12rem);
+      padding: clamp(0.875rem, 2cqi, 1.125rem);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: var(--paper);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 18px 48px rgba(82, 78, 93, 0.1);
+      backdrop-filter: blur(1.125rem);
+      box-shadow: 0 1.125rem 3rem rgba(82, 78, 93, 0.1);
     }
 
     .summary strong {
       display: block;
-      font-size: 2rem;
+      font-size: clamp(1.75rem, 4cqi, 2.25rem);
       line-height: 1;
     }
 
     .summary span {
       display: block;
-      margin-top: 7px;
+      margin-top: 0.45rem;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: clamp(0.85rem, 1.4cqi, 0.95rem);
     }
 
     .add-panel {
       display: grid;
-      grid-template-columns: minmax(130px, 180px) minmax(0, 1fr) auto;
-      gap: 10px;
-      margin-bottom: 18px;
-      padding: 12px;
+      grid-template-columns: minmax(8.125rem, 11.25rem) minmax(0, 1fr) auto;
+      gap: var(--gap);
+      margin-bottom: clamp(0.875rem, 2.4cqi, 1.25rem);
+      padding: clamp(0.625rem, 1.7cqi, 0.875rem);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: var(--paper-strong);
-      box-shadow: 0 14px 42px rgba(82, 78, 93, 0.08);
+      box-shadow: 0 0.875rem 2.625rem rgba(82, 78, 93, 0.08);
     }
 
     select,
     input[type="text"] {
       width: 100%;
-      height: 44px;
+      height: var(--control);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: rgba(255, 255, 255, 0.78);
       color: var(--ink);
       outline: none;
+      font-size: clamp(0.95rem, 1.6cqi, 1rem);
     }
 
     select {
-      padding: 0 12px;
+      padding: 0 clamp(0.7rem, 1.5cqi, 0.9rem);
     }
 
     input[type="text"] {
-      padding: 0 14px;
+      padding: 0 clamp(0.75rem, 1.8cqi, 1rem);
     }
 
     select:focus,
     input[type="text"]:focus {
       border-color: rgba(121, 108, 190, 0.55);
-      box-shadow: 0 0 0 4px rgba(121, 108, 190, 0.12);
+      box-shadow: 0 0 0 0.25rem rgba(121, 108, 190, 0.12);
     }
 
     .add-btn,
@@ -136,7 +141,7 @@
       display: inline-grid;
       place-items: center;
       border: 0;
-      border-radius: 8px;
+      border-radius: var(--radius);
       color: white;
       background: #6f8f7f;
       cursor: pointer;
@@ -144,11 +149,12 @@
     }
 
     .add-btn {
-      min-width: 128px;
-      height: 44px;
-      padding: 0 18px;
+      min-width: min(100%, 8rem);
+      height: var(--control);
+      padding: 0 clamp(1rem, 2cqi, 1.25rem);
       font-weight: 700;
-      box-shadow: 0 10px 24px rgba(99, 129, 113, 0.24);
+      font-size: clamp(0.95rem, 1.6cqi, 1rem);
+      box-shadow: 0 0.625rem 1.5rem rgba(99, 129, 113, 0.24);
     }
 
     .add-btn:hover,
@@ -159,19 +165,19 @@
 
     .week {
       display: grid;
-      grid-template-columns: repeat(7, minmax(150px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.75rem), 1fr));
+      gap: var(--gap);
       align-items: start;
     }
 
     .day {
-      min-height: 360px;
-      padding: 14px;
+      min-height: clamp(18rem, 32cqi, 22.5rem);
+      padding: clamp(0.75rem, 1.8cqi, 1rem);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: var(--paper);
-      box-shadow: 0 16px 44px rgba(82, 78, 93, 0.09);
-      backdrop-filter: blur(16px);
+      box-shadow: 0 1rem 2.75rem rgba(82, 78, 93, 0.09);
+      backdrop-filter: blur(1rem);
     }
 
     .day:nth-child(1) { --accent: var(--mint); }
@@ -185,54 +191,55 @@
     .day-head {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
+      gap: 0.625rem;
       align-items: center;
-      margin-bottom: 12px;
-      padding-bottom: 12px;
+      margin-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
+      padding-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
       border-bottom: 1px solid var(--line);
     }
 
     .day-title {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 0.55rem;
       min-width: 0;
       margin: 0;
-      font-size: 1rem;
+      font-size: clamp(0.98rem, 1.65cqi, 1.1rem);
     }
 
     .mark {
-      width: 13px;
-      height: 13px;
+      width: clamp(0.75rem, 1.4cqi, 0.9rem);
+      height: clamp(0.75rem, 1.4cqi, 0.9rem);
       flex: 0 0 auto;
       border-radius: 999px;
       background: var(--accent);
-      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.7);
+      box-shadow: 0 0 0 0.31rem rgba(255, 255, 255, 0.7);
     }
 
     .count {
       flex: 0 0 auto;
       color: var(--muted);
-      font-size: 0.82rem;
+      font-size: clamp(0.8rem, 1.3cqi, 0.9rem);
     }
 
     .tasks {
       display: grid;
-      gap: 9px;
-      min-height: 272px;
+      gap: clamp(0.5rem, 1.2cqi, 0.7rem);
+      min-height: clamp(13rem, 25cqi, 17rem);
       align-content: start;
     }
 
     .task {
       display: grid;
-      grid-template-columns: 28px minmax(0, 1fr) 28px;
-      gap: 8px;
+      grid-template-columns: var(--task-button) minmax(0, 1fr) var(--task-button);
+      gap: clamp(0.45rem, 1.1cqi, 0.65rem);
       align-items: center;
-      min-height: 46px;
-      padding: 8px;
+      min-height: clamp(2.75rem, 5.2cqi, 3.25rem);
+      padding: clamp(0.45rem, 1.1cqi, 0.65rem);
       border: 1px solid rgba(82, 78, 93, 0.1);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: rgba(255, 255, 255, 0.62);
+      --task-button: clamp(1.75rem, 3.4cqi, 2rem);
     }
 
     .task input {
@@ -244,8 +251,8 @@
     .check {
       display: grid;
       place-items: center;
-      width: 28px;
-      height: 28px;
+      width: var(--task-button);
+      height: var(--task-button);
       border: 1px solid rgba(82, 78, 93, 0.18);
       border-radius: 999px;
       background: white;
@@ -254,8 +261,8 @@
 
     .check svg,
     .delete svg {
-      width: 16px;
-      height: 16px;
+      width: clamp(0.95rem, 1.8cqi, 1.1rem);
+      height: clamp(0.95rem, 1.8cqi, 1.1rem);
     }
 
     .check svg {
@@ -285,16 +292,17 @@
     .text {
       min-width: 0;
       overflow-wrap: anywhere;
+      font-size: clamp(0.92rem, 1.55cqi, 1rem);
       line-height: 1.35;
     }
 
     .delete {
       display: grid;
       place-items: center;
-      width: 28px;
-      height: 28px;
+      width: var(--task-button);
+      height: var(--task-button);
       border: 0;
-      border-radius: 8px;
+      border-radius: var(--radius);
       color: #8b7d83;
       background: transparent;
       cursor: pointer;
@@ -308,16 +316,16 @@
     .empty {
       display: grid;
       place-items: center;
-      min-height: 92px;
-      padding: 14px;
+      min-height: clamp(5rem, 10cqi, 6.25rem);
+      padding: clamp(0.75rem, 1.8cqi, 1rem);
       border: 1px dashed rgba(82, 78, 93, 0.18);
-      border-radius: 8px;
+      border-radius: var(--radius);
       color: var(--muted);
       text-align: center;
-      font-size: 0.9rem;
+      font-size: clamp(0.86rem, 1.45cqi, 0.95rem);
     }
 
-    @media (max-width: 980px) {
+    @media (max-width: 61.25rem) {
       header {
         align-items: stretch;
         flex-direction: column;
@@ -326,16 +334,12 @@
       .summary {
         min-width: 0;
       }
-
-      .week {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 40rem) {
       .app {
-        width: min(100% - 20px, 520px);
-        padding-top: 22px;
+        width: min(100% - 1.25rem, 32.5rem);
+        padding-top: 1.375rem;
       }
 
       .add-panel,
