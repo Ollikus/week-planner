@@ -400,7 +400,7 @@
 
     .habit-grid {
       display: grid;
-      grid-template-columns: minmax(7.5rem, 1fr) repeat(7, 1.6rem) minmax(4.75rem, 7rem);
+      grid-template-columns: minmax(7.5rem, 1fr) repeat(7, 1.6rem) minmax(4.75rem, 7rem) 1.6rem;
       gap: 0.5rem 0.3rem;
       align-items: center;
       min-width: 26rem;
@@ -421,18 +421,11 @@
     }
 
     .habit-name {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.3rem;
       min-width: 0;
-      font-size: 0.9rem;
-    }
-
-    .habit-name span {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      font-size: 0.9rem;
     }
 
     .habit-del {
@@ -525,6 +518,52 @@
       color: var(--muted);
       text-align: right;
       font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .habits-summary[hidden] {
+      display: none !important;
+    }
+
+    .habits-summary-body {
+      display: grid;
+      gap: 0.7rem;
+      padding: clamp(0.75rem, 1.8cqi, 1rem);
+    }
+
+    .hsum-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(4rem, 8rem) 2.6rem;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .hsum-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+
+    .hsum-meter {
+      height: 0.5rem;
+      border-radius: 999px;
+      background: var(--chart-track);
+      overflow: hidden;
+    }
+
+    .hsum-meter i {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--chart-fill);
+    }
+
+    .hsum-pct {
+      text-align: right;
+      color: var(--muted);
+      font-size: 0.8rem;
       font-variant-numeric: tabular-nums;
     }
 
@@ -1252,6 +1291,25 @@
       background: rgba(255, 255, 255, 0.06);
     }
 
+    /* Нижняя панель вкладок и добавление — только на телефоне */
+    .tabbar,
+    .fab,
+    .add-sheet,
+    .sheet-scrim {
+      display: none;
+    }
+
+    .only-mobile {
+      display: none;
+    }
+
+    .focus-tab-hint {
+      margin: 0 0 var(--gap);
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
     @media (max-width: 61.25rem) {
       header {
         align-items: stretch;
@@ -1299,7 +1357,12 @@
       }
 
       .day {
+        height: auto;
         min-height: 0;
+      }
+
+      .day .tasks {
+        overflow-y: visible;
       }
 
       .day-head {
@@ -1357,18 +1420,252 @@
       .ring-wrap {
         padding-bottom: 0.6rem;
       }
+
+      /* ── вкладки: показываем панель, прячем неактивные секции ── */
+      .app {
+        padding-bottom: 5.5rem;
+      }
+
+      .only-mobile {
+        display: block;
+      }
+
+      .mobile-hidden {
+        display: none !important;
+      }
+
+      header {
+        margin-bottom: 0.7rem;
+      }
+
+      h1 {
+        font-size: 1.65rem;
+      }
+
+      .head-titles .subtitle {
+        display: none;
+      }
+
+      .daily-quote {
+        font-size: 1rem;
+        margin-bottom: 0;
+      }
+
+      .panel {
+        margin-top: 0.7rem;
+      }
+
+      .tabbar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        gap: 0.15rem;
+        padding: 0.35rem 0.4rem calc(0.35rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--line);
+        background: var(--paper-strong);
+        box-shadow: 0 -0.5rem 1.5rem rgba(75, 58, 47, 0.12);
+        backdrop-filter: blur(0.75rem);
+      }
+
+      .tab-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        padding: 0.35rem 0.2rem;
+        border: 0;
+        border-radius: var(--radius);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 0.68rem;
+        font-weight: 600;
+        transition: color 140ms ease, background 140ms ease;
+      }
+
+      .tab-btn svg {
+        width: 1.35rem;
+        height: 1.35rem;
+      }
+
+      .tab-btn.is-active {
+        color: var(--olive);
+        background: color-mix(in srgb, var(--acc-sage) 32%, transparent);
+      }
+
+      :root[data-theme="dark"] .tab-btn.is-active {
+        color: var(--olive);
+        background: color-mix(in srgb, var(--acc-sage) 40%, transparent);
+      }
+
+      /* убираем формы-добавления и лишние кнопки шапки — их заменяют «+» и нижние кнопки */
+      form.add-panel,
+      .habit-form,
+      #focusDayBtn,
+      #themeToggle {
+        display: none !important;
+      }
+
+      .panel {
+        display: none;
+      }
+
+      /* тема — иконка в правом верхнем углу */
+      .theme-corner {
+        display: grid;
+        place-items: center;
+        position: fixed;
+        top: 0.7rem;
+        right: 0.7rem;
+        z-index: 32;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: var(--paper-strong);
+        color: var(--ink);
+        cursor: pointer;
+        font-size: 1.1rem;
+        box-shadow: var(--shadow, 0 0.5rem 1.25rem rgba(75, 58, 47, 0.12));
+      }
+
+      h1 {
+        max-width: calc(100% - 3rem);
+      }
+
+      /* нижние кнопки очистки (в Обзоре) */
+      .mobile-actions {
+        display: grid;
+        gap: 0.5rem;
+        margin-top: 1.4rem;
+      }
+
+      .mobile-actions .ghost-btn {
+        width: 100%;
+      }
+
+      /* плавающая кнопка «+» */
+      .fab {
+        display: flex;
+        position: fixed;
+        right: 1rem;
+        bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+        z-index: 34;
+        width: 3.4rem;
+        height: 3.4rem;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 50%;
+        background: #5f7a63;
+        color: #fffcf6;
+        font-size: 2rem;
+        line-height: 1;
+        box-shadow: 0 0.6rem 1.6rem rgba(95, 122, 99, 0.42);
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      .fab:active {
+        transform: scale(0.94);
+      }
+
+      .sheet-scrim {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 38;
+        background: rgba(36, 30, 24, 0.22);
+      }
+
+      .add-sheet {
+        display: grid;
+        gap: 0.5rem;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 40;
+        padding: 0.7rem 0.7rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid var(--line);
+        background: var(--paper-strong);
+        box-shadow: 0 -0.6rem 1.8rem rgba(75, 58, 47, 0.2);
+      }
+
+      .add-sheet form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.5rem;
+      }
+
+      .add-sheet .sheet-day {
+        grid-column: 1 / -1;
+      }
+
+      .add-sheet .add-btn {
+        width: auto;
+        min-width: 0;
+      }
+
+      .fab[hidden],
+      .add-sheet[hidden],
+      .sheet-scrim[hidden] {
+        display: none !important;
+      }
+
+      body.sheet-open .tabbar {
+        display: none;
+      }
+
+      /* треккер: компактнее, чтобы влезал на экран без горизонтальной прокрутки */
+      .habit-grid {
+        grid-template-columns: minmax(3.6rem, 1fr) repeat(7, minmax(0, 1fr)) auto 1.3rem;
+        gap: 0.45rem 0.12rem;
+        min-width: 0;
+      }
+
+      .habit-scroll {
+        overflow-x: visible;
+        padding-bottom: 1.6rem;
+      }
+
+      .habit-name {
+        font-size: 0.8rem;
+      }
+
+      .habit-h {
+        font-size: 0.66rem;
+      }
+
+      .hcheck {
+        width: 1.3rem;
+        height: 1.3rem;
+      }
+
+      .habit-meter {
+        display: none;
+      }
+
+      .habit-pct {
+        min-width: 0;
+        font-size: 0.72rem;
+      }
     }
   </style>
 </head>
 <body>
   <main class="app">
     <header>
-      <div>
+      <div class="head-titles">
         <h1>Недельный план</h1>
         <p class="daily-quote" id="dailyQuote"></p>
         <p class="subtitle">Добавляй задачи по дням и отмечай готовое. Листай недели стрелками — планировать можно и наперёд. Всё сохраняется в этом браузере автоматически.</p>
       </div>
-      <div class="panel">
+      <div class="panel" data-tab="overview">
         <div class="toolbar">
           <button class="ghost-btn" id="focusDayBtn" type="button">🎯 Фокус дня</button>
           <button class="ghost-btn" id="themeToggle" type="button">🌙 Тёмная тема</button>
@@ -1378,7 +1675,7 @@
       </div>
     </header>
 
-    <nav class="week-nav" aria-label="Навигация по неделям">
+    <nav class="week-nav" data-tab="week" aria-label="Навигация по неделям">
       <button class="nav-btn" id="prevWeek" type="button" aria-label="Предыдущая неделя">‹</button>
       <span class="week-range" id="weekRange"></span>
       <button class="nav-btn" id="nextWeek" type="button" aria-label="Следующая неделя">›</button>
@@ -1386,7 +1683,7 @@
     </nav>
 
     <div class="boards">
-      <section class="board-card" aria-label="Еженедельный прогресс">
+      <section class="board-card" data-tab="overview" aria-label="Еженедельный прогресс">
         <h2 class="band band-sage">Еженедельный прогресс</h2>
         <div class="progress-wrap">
           <div class="chart-area">
@@ -1400,7 +1697,7 @@
         </div>
       </section>
 
-      <section class="board-card" aria-label="Ежедневные привычки">
+      <section class="board-card" data-tab="tracker" aria-label="Ежедневные привычки">
         <h2 class="band band-sand">Ежедневные привычки</h2>
         <div class="habit-body">
           <form class="habit-form" id="habitForm">
@@ -1414,15 +1711,25 @@
       </section>
     </div>
 
-    <form class="add-panel" id="taskForm">
+    <section class="habits-summary board-card only-mobile" data-tab="overview" aria-label="Прогресс по привычкам" hidden>
+      <h2 class="band band-sand">Прогресс по привычкам</h2>
+      <div class="habits-summary-body" id="habitsSummary"></div>
+    </section>
+
+    <form class="add-panel" id="taskForm" data-tab="week">
       <select id="daySelect" aria-label="День недели"></select>
       <input id="taskInput" type="text" autocomplete="off" maxlength="120" placeholder="Новая задача">
       <button class="add-btn" type="submit">Добавить</button>
     </form>
 
-    <section class="week" id="week" aria-label="Задачи на неделю"></section>
+    <section class="week" id="week" data-tab="week" aria-label="Задачи на неделю"></section>
 
-    <div class="reflect" aria-label="Итоги недели">
+    <section class="focus-tab only-mobile" data-tab="focus" aria-label="Фокус на сегодня">
+      <p class="focus-tab-hint" id="focusTabHint"></p>
+      <div class="focus-tab-body" id="focusTabBody"></div>
+    </section>
+
+    <div class="reflect" data-tab="overview" aria-label="Итоги недели">
       <section class="board-card">
         <h2 class="band band-taupe">Что было успешно?</h2>
         <textarea class="note" data-note="success" placeholder="Заполни в конце недели"></textarea>
@@ -1436,7 +1743,43 @@
         <textarea class="note" data-note="gratitude" placeholder="Хотя бы одна мелочь"></textarea>
       </section>
     </div>
+
+    <div class="mobile-actions only-mobile" data-tab="overview">
+      <button class="ghost-btn" id="clearDoneMobile" type="button">Очистить выполненные</button>
+      <button class="ghost-btn" id="clearWeekMobile" type="button">Очистить неделю</button>
+    </div>
   </main>
+
+  <button class="theme-corner only-mobile" id="themeCorner" type="button" aria-label="Переключить тему">🌙</button>
+
+  <div class="sheet-scrim" id="sheetScrim" hidden></div>
+  <div class="add-sheet" id="addSheet" hidden>
+    <form id="addSheetForm">
+      <select class="sheet-day" id="sheetDay" aria-label="День" hidden></select>
+      <input id="sheetInput" type="text" autocomplete="off" maxlength="120" placeholder="Новая задача">
+      <button class="add-btn" type="submit">Добавить</button>
+    </form>
+  </div>
+  <button class="fab only-mobile" id="fab" type="button" aria-label="Добавить" hidden>+</button>
+
+  <nav class="tabbar" id="tabbar" aria-label="Разделы">
+    <button class="tab-btn" type="button" data-tabgo="overview" aria-label="Обзор">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M20 20H3"></path></svg>
+      <span>Обзор</span>
+    </button>
+    <button class="tab-btn" type="button" data-tabgo="week" aria-label="Неделя">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M3 9h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg>
+      <span>Неделя</span>
+    </button>
+    <button class="tab-btn" type="button" data-tabgo="focus" aria-label="Фокус">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+      <span>Фокус</span>
+    </button>
+    <button class="tab-btn" type="button" data-tabgo="tracker" aria-label="Треккер">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      <span>Треккер</span>
+    </button>
+  </nav>
 
   <div class="focus-modal" id="focusModal" role="dialog" aria-modal="true" aria-labelledby="focusTitle" hidden>
     <section class="focus-panel">
@@ -1534,6 +1877,23 @@
     const focusInput = document.querySelector("#focusInput");
     const focusClose = document.querySelector("#focusClose");
     const focusDayBtn = document.querySelector("#focusDayBtn");
+    const focusTabBody = document.querySelector("#focusTabBody");
+    const focusTabHint = document.querySelector("#focusTabHint");
+    const habitsSummary = document.querySelector("#habitsSummary");
+    const habitsSummarySection = document.querySelector(".habits-summary");
+    const tabbar = document.querySelector("#tabbar");
+    const themeCorner = document.querySelector("#themeCorner");
+    const clearDoneMobile = document.querySelector("#clearDoneMobile");
+    const clearWeekMobile = document.querySelector("#clearWeekMobile");
+    const fab = document.querySelector("#fab");
+    const addSheet = document.querySelector("#addSheet");
+    const addSheetForm = document.querySelector("#addSheetForm");
+    const sheetDay = document.querySelector("#sheetDay");
+    const sheetInput = document.querySelector("#sheetInput");
+    const sheetScrim = document.querySelector("#sheetScrim");
+    const mobileQuery = window.matchMedia("(max-width: 40rem)");
+    let currentTab = "week";
+    let sheetMode = "task-week";
     let focusDate = "";
 
     // ── даты ────────────────────────────────────────────────────────────
@@ -1562,6 +1922,12 @@
 
     function weekDates() {
       return dayNames.map((_, i) => addDays(weekStart, i));
+    }
+
+    // прогресс всегда считается по текущей реальной неделе, а не по пролистанной
+    function currentWeekDates() {
+      const monday = mondayISO(new Date());
+      return dayNames.map((_, i) => addDays(monday, i));
     }
 
     function selectableDates(weeks = 5) {
@@ -2075,16 +2441,16 @@
       renderHabits();
     });
 
-    clearDoneBtn.addEventListener("click", () => {
+    function clearDoneTasks() {
       const dates = weekDates();
       const doneCount = tasks.filter((t) => t.done && dates.includes(t.date)).length;
       if (doneCount === 0) return;
       if (!confirm(`Удалить выполненные задачи этой недели (${doneCount})?`)) return;
       tasks = tasks.filter((t) => !(t.done && dates.includes(t.date)));
       saveAndRender();
-    });
+    }
 
-    clearWeekBtn.addEventListener("click", () => {
+    function clearWeekAll() {
       const dates = weekDates();
       const weekNotes = notes[weekStart];
       const hasAnything = tasks.some((t) => dates.includes(t.date))
@@ -2102,7 +2468,12 @@
       save(STORE.prios, prios);
       save(STORE.notes, notes);
       syncWeek();
-    });
+    }
+
+    clearDoneBtn.addEventListener("click", clearDoneTasks);
+    clearWeekBtn.addEventListener("click", clearWeekAll);
+    clearDoneMobile.addEventListener("click", clearDoneTasks);
+    clearWeekMobile.addEventListener("click", clearWeekAll);
 
     prevWeekBtn.addEventListener("click", () => {
       weekStart = addDays(weekStart, -7);
@@ -2119,10 +2490,12 @@
       syncWeek();
     });
 
-    themeToggle.addEventListener("click", () => {
+    function toggleTheme() {
       const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
       applyTheme(next);
-    });
+    }
+    themeToggle.addEventListener("click", toggleTheme);
+    themeCorner.addEventListener("click", toggleTheme);
 
     applyTheme(document.documentElement.dataset.theme || localStorage.getItem(themeKey) || "light");
     dailyQuote.textContent = dayQuotes[(new Date().getDay() + 6) % 7];
@@ -2168,9 +2541,107 @@
       if (event.key === "Escape" && !focusModal.hidden) closeFocus();
     });
 
+    // ── нижняя панель вкладок (только на телефоне) ──────────────────────
+    function applyMobileTab() {
+      const mobile = mobileQuery.matches;
+      document.querySelectorAll("[data-tab]").forEach((el) => {
+        const inTab = el.dataset.tab.split(" ").includes(currentTab);
+        el.classList.toggle("mobile-hidden", mobile && !inTab);
+      });
+      const boards = document.querySelector(".boards");
+      if (boards) {
+        const anyVisible = [...boards.querySelectorAll("[data-tab]")]
+          .some((child) => !child.classList.contains("mobile-hidden"));
+        boards.classList.toggle("mobile-hidden", mobile && !anyVisible);
+      }
+      tabbar.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.classList.toggle("is-active", btn.dataset.tabgo === currentTab);
+      });
+      const canAdd = mobile && ["week", "tracker", "focus"].includes(currentTab);
+      fab.hidden = !canAdd || !addSheet.hidden;
+    }
+
+    function goToTab(tab) {
+      if (!addSheet.hidden) closeSheet();
+      currentTab = tab;
+      applyMobileTab();
+      if (tab === "focus") renderFocusTab();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    tabbar.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => goToTab(btn.dataset.tabgo));
+    });
+
+    mobileQuery.addEventListener("change", applyMobileTab);
+
+    // ── плавающая кнопка «+»: добавление задачи/привычки ────────────────
+    function openSheet(mode) {
+      sheetMode = mode;
+      if (mode === "habit") {
+        sheetDay.hidden = true;
+        sheetInput.maxLength = 60;
+        sheetInput.placeholder = "Новая привычка";
+      } else if (mode === "task-today") {
+        sheetDay.hidden = true;
+        sheetInput.maxLength = 120;
+        sheetInput.placeholder = "Новая задача на сегодня";
+      } else {
+        sheetDay.innerHTML = daySelect.innerHTML;
+        const todayIso = toISO(new Date());
+        sheetDay.value = weekDates().includes(todayIso) ? todayIso : weekStart;
+        sheetDay.hidden = false;
+        sheetInput.maxLength = 120;
+        sheetInput.placeholder = "Новая задача — можно с временем";
+      }
+      sheetInput.value = "";
+      addSheet.hidden = false;
+      sheetScrim.hidden = false;
+      document.body.classList.add("sheet-open");
+      fab.hidden = true;
+      sheetInput.focus();
+    }
+
+    function closeSheet() {
+      addSheet.hidden = true;
+      sheetScrim.hidden = true;
+      document.body.classList.remove("sheet-open");
+      applyMobileTab();
+    }
+
+    fab.addEventListener("click", () => {
+      const modeByTab = { week: "task-week", tracker: "habit", focus: "task-today" };
+      openSheet(modeByTab[currentTab] || "task-week");
+    });
+
+    addSheetForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = sheetInput.value.trim();
+      if (!value) {
+        sheetInput.focus();
+        return;
+      }
+      if (sheetMode === "habit") {
+        habits.push({ id: makeId(), title: value.slice(0, 60), marks: {} });
+        save(STORE.habits, habits);
+        renderHabits();
+      } else {
+        const date = sheetMode === "task-today" ? toISO(new Date()) : sheetDay.value;
+        addTask(date, value);
+      }
+      sheetInput.value = "";
+      sheetInput.focus();
+    });
+
+    sheetScrim.addEventListener("click", closeSheet);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !addSheet.hidden) closeSheet();
+    });
+
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
       themeToggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
+      themeCorner.textContent = theme === "dark" ? "☀️" : "🌙";
       try {
         localStorage.setItem(themeKey, theme);
       } catch {}
@@ -2479,109 +2950,129 @@
       }
     }
 
+    function createDayCard(date, index, todayIso) {
+      const dayTasks = sortedTasksForDate(date);
+      const pending = dayTasks.filter((t) => !t.done).length;
+
+      const section = document.createElement("section");
+      section.className = date === todayIso ? "day today" : "day";
+      section.dataset.date = date;
+      section.style.setProperty("--accent", `var(--acc-${["sage", "sand", "taupe", "stone", "latte", "wheat", "moss"][index]})`);
+      section.innerHTML = `
+        <div class="day-head">
+          <h2 class="day-title">
+            <span class="day-name">${dayNames[index]}</span>
+            <span class="day-date">${fmtShort(date)}</span>
+          </h2>
+          <div class="day-tools">
+            ${pending > 0 ? `
+              <button class="move" type="button" title="Перенести невыполненное на завтра" aria-label="Перенести невыполненное на завтра">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14"></path>
+                  <path d="M13 6l6 6-6 6"></path>
+                </svg>
+              </button>
+            ` : ""}
+          </div>
+        </div>
+        <div class="prios"></div>
+        <div class="tasks"></div>
+        <div class="quick-add-slot"></div>
+      `;
+
+      const moveButton = section.querySelector(".move");
+      if (moveButton) {
+        moveButton.addEventListener("click", () => moveIncomplete(date, section));
+      }
+      renderPrios(section.querySelector(".prios"), date);
+
+      const list = section.querySelector(".tasks");
+      list.dataset.date = date;
+
+      if (dayTasks.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Свободный день";
+        list.append(empty);
+      } else {
+        dayTasks.forEach((task) => list.append(createTask(task)));
+      }
+
+      section.addEventListener("click", (event) => {
+        if (event.target.closest("button, input, textarea, select, label, .task, .chip, .add-prio")) return;
+        if (section.querySelector(".quick-add")) return;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "quick-add";
+        input.maxLength = 120;
+        input.autocomplete = "off";
+        input.placeholder = "Новая задача";
+
+        let committed = false;
+        const close = (saveTask) => {
+          if (committed) return;
+          committed = true;
+          const value = input.value.trim();
+          if (saveTask && value) addTask(date, value);
+          else input.closest(".quick-add-slot").replaceChildren();
+        };
+
+        input.addEventListener("keydown", (keyEvent) => {
+          if (keyEvent.key === "Enter") {
+            keyEvent.preventDefault();
+            close(true);
+          }
+          if (keyEvent.key === "Escape") {
+            keyEvent.preventDefault();
+            close(false);
+          }
+        });
+        input.addEventListener("blur", () => close(Boolean(input.value.trim())));
+        section.querySelector(".quick-add-slot").append(input);
+        input.focus();
+      });
+
+      return section;
+    }
+
     function render() {
       week.replaceChildren();
       const todayIso = toISO(new Date());
-
-      weekDates().forEach((date, index) => {
-        const dayTasks = sortedTasksForDate(date);
-        const pending = dayTasks.filter((t) => !t.done).length;
-
-        const section = document.createElement("section");
-        section.className = date === todayIso ? "day today" : "day";
-        section.dataset.date = date;
-        section.innerHTML = `
-          <div class="day-head">
-            <h2 class="day-title">
-              <span class="day-name">${dayNames[index]}</span>
-              <span class="day-date">${fmtShort(date)}</span>
-            </h2>
-            <div class="day-tools">
-              ${pending > 0 ? `
-                <button class="move" type="button" title="Перенести невыполненное на завтра" aria-label="Перенести невыполненное на завтра">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M5 12h14"></path>
-                    <path d="M13 6l6 6-6 6"></path>
-                  </svg>
-                </button>
-              ` : ""}
-            </div>
-          </div>
-          <div class="prios"></div>
-          <div class="tasks"></div>
-          <div class="quick-add-slot"></div>
-        `;
-
-        const moveButton = section.querySelector(".move");
-        if (moveButton) {
-          moveButton.addEventListener("click", () => moveIncomplete(date, section));
-        }
-        renderPrios(section.querySelector(".prios"), date);
-
-        const list = section.querySelector(".tasks");
-        list.dataset.date = date;
-
-        if (dayTasks.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "Свободный день";
-          list.append(empty);
-        } else {
-          dayTasks.forEach((task) => list.append(createTask(task)));
-        }
-
-        section.addEventListener("click", (event) => {
-          if (event.target.closest("button, input, textarea, select, label, .task, .chip, .add-prio")) return;
-          if (section.querySelector(".quick-add")) return;
-
-          const input = document.createElement("input");
-          input.type = "text";
-          input.className = "quick-add";
-          input.maxLength = 120;
-          input.autocomplete = "off";
-          input.placeholder = "Новая задача";
-
-          let committed = false;
-          const close = (saveTask) => {
-            if (committed) return;
-            committed = true;
-            const value = input.value.trim();
-            if (saveTask && value) addTask(date, value);
-            else input.closest(".quick-add-slot").replaceChildren();
-          };
-
-          input.addEventListener("keydown", (keyEvent) => {
-            if (keyEvent.key === "Enter") {
-              keyEvent.preventDefault();
-              close(true);
-            }
-            if (keyEvent.key === "Escape") {
-              keyEvent.preventDefault();
-              close(false);
-            }
-          });
-          input.addEventListener("blur", () => close(Boolean(input.value.trim())));
-          section.querySelector(".quick-add-slot").append(input);
-          input.focus();
-        });
-
-        week.append(section);
-      });
-
+      weekDates().forEach((date, index) => week.append(createDayCard(date, index, todayIso)));
       renderProgress();
       renderChart();
+      renderFocusTab();
+    }
+
+    function renderFocusTab() {
+      const todayIso = toISO(new Date());
+      const weekIndex = weekDates().indexOf(todayIso);
+      focusTabBody.replaceChildren();
+      if (weekIndex === -1) {
+        focusTabHint.textContent = "Сегодняшний день не входит в открытую неделю — вернись на текущую неделю во вкладке «Неделя».";
+        return;
+      }
+      const stats = dayStats(todayIso);
+      focusTabHint.textContent = stats.total === 0
+        ? "На сегодня пока нет задач. Нажми на карточку, чтобы добавить."
+        : `Сегодня: выполнено ${stats.done} из ${stats.total}.`;
+      const card = createDayCard(todayIso, weekIndex, todayIso);
+      card.classList.add("focus-day-card");
+      focusTabBody.append(card);
     }
 
     function renderChart() {
       const todayIso = toISO(new Date());
-      const perDay = weekDates().map((date) => dayStats(date));
+      const chartDates = currentWeekDates();
+      const perDay = chartDates.map((date) => dayStats(date));
       const max = Math.max(1, ...perDay.map((d) => d.total));
 
       chartBars.replaceChildren();
       chartDays.replaceChildren();
 
       perDay.forEach((day, index) => {
-        const date = weekDates()[index];
+        const date = chartDates[index];
         const slot = document.createElement("div");
         slot.className = day.debt.length ? "chart-slot has-debt" : "chart-slot";
         slot.title = `${dayNames[index]}, ${fmtShort(date)}: выполнено ${day.done} из ${day.total}${day.debt.length ? `, актуальных переносов из этого дня: ${day.debt.length}` : ""}`;
@@ -2609,7 +3100,39 @@
       });
     }
 
+    // Сводка привычек для вкладки «Обзор» — всегда по текущей реальной неделе
+    function renderHabitsSummary() {
+      habitsSummary.replaceChildren();
+      if (habits.length === 0) {
+        habitsSummarySection.hidden = true;
+        return;
+      }
+      habitsSummarySection.hidden = false;
+      const dates = currentWeekDates();
+      habits.forEach((habit) => {
+        const doneCount = dates.filter((d) => habit.marks[d]).length;
+        const pct = Math.round((doneCount / 7) * 100);
+        const row = document.createElement("div");
+        row.className = "hsum-row";
+        const name = document.createElement("span");
+        name.className = "hsum-name";
+        name.textContent = habit.title;
+        name.title = habit.title;
+        const meter = document.createElement("div");
+        meter.className = "hsum-meter";
+        const fill = document.createElement("i");
+        fill.style.width = `${pct}%`;
+        meter.append(fill);
+        const pctEl = document.createElement("span");
+        pctEl.className = "hsum-pct";
+        pctEl.textContent = `${pct}%`;
+        row.append(name, meter, pctEl);
+        habitsSummary.append(row);
+      });
+    }
+
     function renderHabits() {
+      renderHabitsSummary();
       habitGrid.replaceChildren();
       const dates = weekDates();
 
@@ -2621,7 +3144,7 @@
         return;
       }
 
-      ["Привычка", ...dayShort, "Прогресс"].forEach((text, index) => {
+      ["Привычка", ...dayShort, "Прогресс", ""].forEach((text, index) => {
         const cell = document.createElement("span");
         cell.className = index === 0 ? "habit-h habit-h-name" : "habit-h";
         cell.textContent = text;
@@ -2631,30 +3154,8 @@
       habits.forEach((habit) => {
         const name = document.createElement("div");
         name.className = "habit-name";
-        const title = document.createElement("span");
-        title.textContent = habit.title;
-        title.title = habit.title;
-        const del = document.createElement("button");
-        del.type = "button";
-        del.className = "habit-del";
-        del.textContent = "✕";
-        del.title = "Удалить привычку";
-        del.setAttribute("aria-label", `Удалить привычку «${habit.title}»`);
-        del.addEventListener("click", async () => {
-          const choice = await showConfirm({
-            anchor: name,
-            message: `Удалить привычку «${habit.title}»? Отметки за неделю тоже сотрутся.`,
-            actions: [
-              { label: "Удалить", kind: "danger", value: "delete" },
-              { label: "Отмена", value: null }
-            ]
-          });
-          if (choice !== "delete") return;
-          habits = habits.filter((item) => item.id !== habit.id);
-          save(STORE.habits, habits);
-          renderHabits();
-        });
-        name.append(title, del);
+        name.textContent = habit.title;
+        name.title = habit.title;
         habitGrid.append(name);
 
         const fill = document.createElement("i");
@@ -2680,6 +3181,7 @@
             else delete habit.marks[date];
             save(STORE.habits, habits);
             updateProgress();
+            renderHabitsSummary();
           });
           box.append(input);
           box.insertAdjacentHTML(
@@ -2698,6 +3200,28 @@
         updateProgress();
         progress.append(meter, pctLabel);
         habitGrid.append(progress);
+
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "habit-del";
+        del.textContent = "✕";
+        del.title = "Удалить привычку";
+        del.setAttribute("aria-label", `Удалить привычку «${habit.title}»`);
+        del.addEventListener("click", async () => {
+          const choice = await showConfirm({
+            anchor: del,
+            message: `Удалить привычку «${habit.title}»? Отметки за неделю тоже сотрутся.`,
+            actions: [
+              { label: "Удалить", kind: "danger", value: "delete" },
+              { label: "Отмена", value: null }
+            ]
+          });
+          if (choice !== "delete") return;
+          habits = habits.filter((item) => item.id !== habit.id);
+          save(STORE.habits, habits);
+          renderHabits();
+        });
+        habitGrid.append(del);
       });
     }
 
@@ -2788,7 +3312,7 @@
     }
 
     function renderProgress() {
-      const dates = weekDates();
+      const dates = currentWeekDates();
       const stats = dates.map((date) => dayStats(date));
       const total = stats.reduce((sum, day) => sum + day.total, 0);
       const done = stats.reduce((sum, day) => sum + day.done, 0);
@@ -2800,6 +3324,7 @@
     }
 
     syncWeek();
+    applyMobileTab();
   </script>
 </body>
 </html>
