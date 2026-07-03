@@ -717,6 +717,12 @@
       border-bottom: 1px dashed var(--line);
     }
 
+    .prios.drag-over,
+    .tasks.drag-over {
+      border-color: rgba(95, 122, 99, 0.55);
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
     .chip {
       display: inline-flex;
       align-items: center;
@@ -731,6 +737,15 @@
       text-align: left;
       font-size: 0.8rem;
       font-weight: 600;
+    }
+
+    .chip[draggable="true"] {
+      cursor: grab;
+    }
+
+    .chip.dragging,
+    .task.dragging {
+      opacity: 0.45;
     }
 
     .chip b {
@@ -785,6 +800,9 @@
       gap: clamp(0.5rem, 1.2cqi, 0.7rem);
       min-height: clamp(10rem, 20cqi, 13rem);
       align-content: start;
+      padding: 0.125rem;
+      border: 1px dashed transparent;
+      border-radius: var(--radius);
     }
 
     .task {
@@ -798,6 +816,10 @@
       border-radius: var(--radius);
       background: rgba(255, 252, 246, 0.62);
       --task-button: clamp(1.75rem, 3.4cqi, 2rem);
+    }
+
+    .task[draggable="true"] {
+      cursor: grab;
     }
 
     :root[data-theme="dark"] .task {
@@ -856,6 +878,21 @@
       text-decoration: line-through;
     }
 
+    .task-body {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+
+    .task-time {
+      flex: 0 0 auto;
+      color: var(--olive);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
     .text {
       min-width: 0;
       overflow-wrap: break-word;
@@ -863,6 +900,18 @@
       hyphens: auto;
       font-size: clamp(0.92rem, 1.55cqi, 1rem);
       line-height: 1.35;
+    }
+
+    .quick-add {
+      width: 100%;
+      height: 2.5rem;
+      margin-top: clamp(0.5rem, 1.2cqi, 0.7rem);
+      padding: 0 0.75rem;
+      border: 1px solid rgba(185, 136, 92, 0.55);
+      border-radius: var(--radius);
+      background: var(--paper-strong);
+      color: var(--ink);
+      outline: none;
     }
 
     .delete {
@@ -1059,7 +1108,10 @@
           <path d="M5 12.5l4.2 4.1L19 7"></path>
         </svg>
       </label>
-      <span class="text"></span>
+      <span class="task-body">
+        <span class="task-time" hidden></span>
+        <span class="text"></span>
+      </span>
       <button class="delete" type="button" title="Удалить задачу" aria-label="Удалить задачу">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M4 7h16"></path>
@@ -1267,6 +1319,103 @@
       save(STORE.prios, prios);
     }
 
+    function parseTaskInput(value) {
+      const text = value.trim();
+      const match = text.match(/^([01]?\d|2[0-3])[\s:.;\-]+([0-5]\d)\s+(.+)$/);
+      if (!match) return { title: text, time: "" };
+      return {
+        title: match[3].trim(),
+        time: `${match[1].padStart(2, "0")}:${match[2]}`
+      };
+    }
+
+    function taskOrderValue(task, index = 0) {
+      return Number.isFinite(task.order) ? task.order : index;
+    }
+
+    function sortedTasksForDate(date) {
+      return tasks
+        .map((task, index) => ({ task, index }))
+        .filter((item) => item.task.date === date)
+        .sort((a, b) => {
+          const aTime = a.task.time || "99:99";
+          const bTime = b.task.time || "99:99";
+          return aTime.localeCompare(bTime) || taskOrderValue(a.task, a.index) - taskOrderValue(b.task, b.index);
+        })
+        .map((item) => item.task);
+    }
+
+    function nextTaskOrder(date) {
+      const list = sortedTasksForDate(date);
+      return list.length ? Math.max(...list.map((task, index) => taskOrderValue(task, index))) + 1 : 0;
+    }
+
+    function addTask(date, rawTitle) {
+      const parsed = parseTaskInput(rawTitle);
+      if (!parsed.title) return false;
+      tasks.push({
+        id: makeId(),
+        date,
+        title: parsed.title,
+        time: parsed.time,
+        order: nextTaskOrder(date),
+        done: false
+      });
+      saveAndRender();
+      return true;
+    }
+
+    function reorderTasks(date, orderedIds) {
+      const orderMap = new Map(orderedIds.map((id, index) => [id, index]));
+      tasks = tasks.map((task) => task.date === date && orderMap.has(task.id)
+        ? { ...task, order: orderMap.get(task.id) }
+        : task
+      );
+    }
+
+    function moveTask(taskId, targetDate, beforeId = "") {
+      const moving = tasks.find((task) => task.id === taskId);
+      if (!moving) return;
+
+      tasks = tasks.map((task) => task.id === taskId ? { ...task, date: targetDate } : task);
+      const targetIds = sortedTasksForDate(targetDate)
+        .filter((task) => task.id !== taskId)
+        .map((task) => task.id);
+      const insertAt = beforeId ? targetIds.indexOf(beforeId) : -1;
+      targetIds.splice(insertAt >= 0 ? insertAt : targetIds.length, 0, taskId);
+      reorderTasks(targetDate, targetIds);
+      saveAndRender();
+    }
+
+    function movePriority(sourceDate, sourceIndex, targetDate, beforeIndex = -1) {
+      const source = getPrios(sourceDate);
+      const [item] = source.splice(sourceIndex, 1);
+      if (!item) return;
+
+      const target = sourceDate === targetDate ? source : getPrios(targetDate);
+      const adjustedBefore = sourceDate === targetDate && beforeIndex > sourceIndex ? beforeIndex - 1 : beforeIndex;
+      const insertAt = adjustedBefore >= 0 ? Math.min(adjustedBefore, target.length) : Math.min(target.length, 2);
+      target.splice(insertAt, 0, item);
+      setPrios(sourceDate, source);
+      setPrios(targetDate, target.slice(0, 3));
+      render();
+    }
+
+    function beforeTaskIdFromPoint(container, y) {
+      const items = [...container.querySelectorAll(".task:not(.dragging)")];
+      const next = items.find((item) => y < item.getBoundingClientRect().top + item.getBoundingClientRect().height / 2);
+      return next ? next.dataset.taskId : "";
+    }
+
+    function beforePriorityIndexFromPoint(container, x, y) {
+      const items = [...container.querySelectorAll(".chip:not(.dragging)")];
+      const next = items.find((item) => {
+        const rect = item.getBoundingClientRect();
+        return y < rect.top + rect.height / 2 || (y <= rect.bottom && x < rect.left + rect.width / 2);
+      });
+      return next ? Number(next.dataset.prioIndex) : -1;
+    }
+
     // ── обработчики ─────────────────────────────────────────────────────
 
     form.addEventListener("submit", (event) => {
@@ -1278,16 +1427,10 @@
         return;
       }
 
-      tasks.push({
-        id: makeId(),
-        date: weekDates()[Number(daySelect.value)],
-        title,
-        done: false
-      });
-
-      taskInput.value = "";
-      taskInput.focus();
-      saveAndRender();
+      if (addTask(weekDates()[Number(daySelect.value)], title)) {
+        taskInput.value = "";
+        taskInput.focus();
+      }
     });
 
     habitForm.addEventListener("submit", (event) => {
@@ -1376,7 +1519,8 @@
 
     function moveIncomplete(date) {
       const next = addDays(date, 1);
-      tasks = tasks.map((t) => t.date === date && !t.done ? { ...t, date: next } : t);
+      let order = nextTaskOrder(next);
+      tasks = tasks.map((t) => t.date === date && !t.done ? { ...t, date: next, order: order++ } : t);
       saveAndRender();
     }
 
@@ -1419,6 +1563,7 @@
 
     function renderPrios(container, date) {
       container.replaceChildren();
+      container.dataset.date = date;
       const list = getPrios(date);
 
       const editor = (index) => {
@@ -1461,6 +1606,9 @@
         const chip = document.createElement("button");
         chip.type = "button";
         chip.className = "chip";
+        chip.draggable = true;
+        chip.dataset.date = date;
+        chip.dataset.prioIndex = String(index);
         chip.title = "Изменить приоритет";
         const num = document.createElement("b");
         num.textContent = String(index + 1);
@@ -1473,6 +1621,12 @@
           input.focus();
           input.select();
         });
+        chip.addEventListener("dragstart", (event) => {
+          chip.classList.add("dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("application/json", JSON.stringify({ type: "priority", date, index }));
+        });
+        chip.addEventListener("dragend", () => chip.classList.remove("dragging"));
         container.append(chip);
       });
 
@@ -1488,6 +1642,25 @@
         });
         container.append(add);
       }
+
+      container.addEventListener("dragover", (event) => {
+        if (!event.dataTransfer.types.includes("application/json")) return;
+        event.preventDefault();
+        container.classList.add("drag-over");
+      });
+      container.addEventListener("dragleave", () => container.classList.remove("drag-over"));
+      container.addEventListener("drop", (event) => {
+        container.classList.remove("drag-over");
+        let payload;
+        try {
+          payload = JSON.parse(event.dataTransfer.getData("application/json"));
+        } catch {
+          return;
+        }
+        if (!payload || payload.type !== "priority") return;
+        event.preventDefault();
+        movePriority(payload.date, Number(payload.index), date, beforePriorityIndexFromPoint(container, event.clientX, event.clientY));
+      });
     }
 
     function render() {
@@ -1495,12 +1668,13 @@
       const todayIso = toISO(new Date());
 
       weekDates().forEach((date, index) => {
-        const dayTasks = tasks.filter((t) => t.date === date);
+        const dayTasks = sortedTasksForDate(date);
         const doneCount = dayTasks.filter((t) => t.done).length;
         const pending = dayTasks.length - doneCount;
 
         const section = document.createElement("section");
         section.className = date === todayIso ? "day today" : "day";
+        section.dataset.date = date;
         section.innerHTML = `
           <div class="day-head">
             <h2 class="day-title">
@@ -1531,6 +1705,7 @@
         renderPrios(section.querySelector(".prios"), date);
 
         const list = section.querySelector(".tasks");
+        list.dataset.date = date;
 
         if (dayTasks.length === 0) {
           const empty = document.createElement("div");
@@ -1540,6 +1715,60 @@
         } else {
           dayTasks.forEach((task) => list.append(createTask(task)));
         }
+
+        list.addEventListener("dragover", (event) => {
+          if (!event.dataTransfer.types.includes("application/json")) return;
+          event.preventDefault();
+          list.classList.add("drag-over");
+        });
+        list.addEventListener("dragleave", () => list.classList.remove("drag-over"));
+        list.addEventListener("drop", (event) => {
+          list.classList.remove("drag-over");
+          let payload;
+          try {
+            payload = JSON.parse(event.dataTransfer.getData("application/json"));
+          } catch {
+            return;
+          }
+          if (!payload || payload.type !== "task") return;
+          event.preventDefault();
+          moveTask(payload.id, date, beforeTaskIdFromPoint(list, event.clientY));
+        });
+
+        section.addEventListener("click", (event) => {
+          if (event.target.closest("button, input, textarea, select, label, .task, .chip, .add-prio")) return;
+          if (section.querySelector(".quick-add")) return;
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "quick-add";
+          input.maxLength = 120;
+          input.autocomplete = "off";
+          input.placeholder = "Новая задача";
+
+          let committed = false;
+          const close = (saveTask) => {
+            if (committed) return;
+            committed = true;
+            const value = input.value.trim();
+            if (saveTask && value) addTask(date, value);
+            else input.remove();
+          };
+
+          input.addEventListener("keydown", (keyEvent) => {
+            if (keyEvent.key === "Enter") {
+              keyEvent.preventDefault();
+              close(true);
+            }
+            if (keyEvent.key === "Escape") {
+              keyEvent.preventDefault();
+              close(false);
+            }
+          });
+          input.addEventListener("blur", () => close(Boolean(input.value.trim())));
+          section.append(input);
+          input.focus();
+        });
 
         week.append(section);
       });
@@ -1676,11 +1905,23 @@
       const node = template.content.firstElementChild.cloneNode(true);
       const checkbox = node.querySelector("input");
       const text = node.querySelector(".text");
+      const time = node.querySelector(".task-time");
       const removeButton = node.querySelector(".delete");
 
+      node.draggable = true;
+      node.dataset.taskId = task.id;
       node.classList.toggle("done", task.done);
       checkbox.checked = task.done;
       text.textContent = task.title;
+      time.hidden = !task.time;
+      time.textContent = task.time || "";
+
+      node.addEventListener("dragstart", (event) => {
+        node.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("application/json", JSON.stringify({ type: "task", id: task.id }));
+      });
+      node.addEventListener("dragend", () => node.classList.remove("dragging"));
 
       checkbox.addEventListener("change", () => {
         tasks = tasks.map((item) => item.id === task.id ? { ...item, done: checkbox.checked } : item);
