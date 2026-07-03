@@ -14,22 +14,28 @@
   <style>
     :root {
       color-scheme: light;
-      --ink: #3b3a42;
-      --muted: #74717d;
-      --line: rgba(82, 78, 93, 0.14);
-      --paper: rgba(255, 255, 255, 0.76);
-      --paper-strong: rgba(255, 255, 255, 0.92);
-      --mint: #cfe9de;
-      --peach: #f7d8c7;
-      --lavender: #ddd6f2;
-      --sky: #cfe3f1;
-      --rose: #f1d4dd;
-      --butter: #f5e8bd;
-      --sage: #dce8ca;
-      --focus: #796cbe;
-      --check-bg: #ffffff;
-      --check-stroke: #4f7462;
-      --done-base: #ffffff;
+      --ink: #4b3a2f;
+      --muted: #94867c;
+      --line: rgba(75, 58, 47, 0.16);
+      --paper: rgba(255, 252, 246, 0.78);
+      --paper-strong: rgba(255, 252, 246, 0.94);
+      --olive: #6f8471;
+      --bronze: #b9885c;
+      --taupe: #9a8b85;
+      --beige: #d8d0c9;
+      --espresso: #4b3a2f;
+      --acc-sage: #c9d2c3;
+      --acc-sand: #e4cbaa;
+      --acc-taupe: #d2c5bf;
+      --acc-stone: #ded6cd;
+      --acc-latte: #d8c6b5;
+      --acc-wheat: #e7d8b8;
+      --acc-moss: #b9c8b5;
+      --check-bg: #fffcf6;
+      --check-stroke: #4e6a52;
+      --done-base: #fffcf6;
+      --chart-fill: #4e7050;
+      --chart-track: #d3ddce;
       --radius: 0.5rem;
       --gap: clamp(0.625rem, 1.6cqi, 0.9rem);
       --control: clamp(2.75rem, 5.6cqi, 3.25rem);
@@ -38,22 +44,28 @@
 
     :root[data-theme="dark"] {
       color-scheme: dark;
-      --ink: #e9e7f0;
-      --muted: #a6a2b3;
+      --ink: #ece5da;
+      --muted: #b0a698;
       --line: rgba(255, 255, 255, 0.12);
-      --paper: rgba(42, 40, 52, 0.72);
-      --paper-strong: rgba(48, 46, 60, 0.92);
-      --mint: #7fae9b;
-      --peach: #d6a585;
-      --lavender: #a59ccf;
-      --sky: #8fb3cf;
-      --rose: #cf9aae;
-      --butter: #cdbb7d;
-      --sage: #a6b98a;
-      --focus: #9d90e0;
+      --paper: rgba(46, 40, 34, 0.78);
+      --paper-strong: rgba(56, 49, 41, 0.94);
+      --olive: #8ba38c;
+      --bronze: #c99a6c;
+      --taupe: #a99a92;
+      --beige: #d8d0c9;
+      --espresso: #4b3a2f;
+      --acc-sage: #5c6b58;
+      --acc-sand: #8a6f4e;
+      --acc-taupe: #6e6058;
+      --acc-stone: #6f6759;
+      --acc-latte: #6d5b4b;
+      --acc-wheat: #7d6f4f;
+      --acc-moss: #566a52;
       --check-bg: rgba(255, 255, 255, 0.1);
-      --check-stroke: #bfe6d3;
-      --done-base: #2a2834;
+      --check-stroke: #cfe0cd;
+      --done-base: #2e2822;
+      --chart-fill: #78997c;
+      --chart-track: #4a5745;
     }
 
     * {
@@ -65,21 +77,22 @@
       margin: 0;
       color: var(--ink);
       background:
-        radial-gradient(circle at 15% 12%, rgba(207, 233, 222, 0.9), transparent 28rem),
-        radial-gradient(circle at 88% 18%, rgba(247, 216, 199, 0.85), transparent 24rem),
-        linear-gradient(135deg, #fbf8f2 0%, #eef6f1 46%, #f7f0f4 100%);
+        radial-gradient(circle at 15% 12%, rgba(201, 210, 195, 0.55), transparent 28rem),
+        radial-gradient(circle at 88% 18%, rgba(228, 203, 170, 0.5), transparent 24rem),
+        linear-gradient(135deg, #f7f2e7 0%, #f1ece0 46%, #f5efe3 100%);
       transition: background 240ms ease, color 240ms ease;
     }
 
     :root[data-theme="dark"] body {
       background:
-        radial-gradient(circle at 15% 12%, rgba(127, 174, 155, 0.16), transparent 28rem),
-        radial-gradient(circle at 88% 18%, rgba(214, 165, 133, 0.14), transparent 24rem),
-        linear-gradient(135deg, #1c1b22 0%, #1f242a 46%, #221d28 100%);
+        radial-gradient(circle at 15% 12%, rgba(139, 163, 140, 0.12), transparent 28rem),
+        radial-gradient(circle at 88% 18%, rgba(201, 154, 108, 0.1), transparent 24rem),
+        linear-gradient(135deg, #211c17 0%, #262019 46%, #241e18 100%);
     }
 
     button,
-    input {
+    input,
+    textarea {
       font: inherit;
     }
 
@@ -95,14 +108,16 @@
       justify-content: space-between;
       gap: clamp(1rem, 2.5cqi, 1.5rem);
       align-items: flex-end;
-      margin-bottom: clamp(1.125rem, 3cqi, 1.625rem);
+      margin-bottom: clamp(1rem, 2.6cqi, 1.4rem);
     }
 
     h1 {
       margin: 0 0 0.5rem;
-      font-size: clamp(2.2rem, 8cqi, 4.6rem);
-      line-height: 0.95;
-      letter-spacing: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      font-size: clamp(2.2rem, 8cqi, 4.4rem);
+      line-height: 0.98;
+      letter-spacing: 0.01em;
     }
 
     .subtitle {
@@ -126,7 +141,7 @@
       border-radius: var(--radius);
       background: var(--paper);
       backdrop-filter: blur(1.125rem);
-      box-shadow: 0 1.125rem 3rem rgba(82, 78, 93, 0.1);
+      box-shadow: 0 1.125rem 3rem rgba(75, 58, 47, 0.1);
     }
 
     .summary strong {
@@ -164,20 +179,370 @@
 
     .ghost-btn:hover {
       transform: translateY(-1px);
-      border-color: rgba(121, 108, 190, 0.45);
+      border-color: rgba(185, 136, 92, 0.55);
       background: var(--paper-strong);
+    }
+
+    .week-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(0.6rem, 1.6cqi, 1rem);
+      margin-bottom: var(--gap);
+    }
+
+    .nav-btn {
+      display: grid;
+      place-items: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(185, 136, 92, 0.55);
+      background: var(--paper-strong);
+    }
+
+    .week-range {
+      min-width: 13rem;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.05rem, 2.2cqi, 1.3rem);
+      font-weight: 600;
+    }
+
+    .today-btn {
+      border: 1px dashed var(--line);
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    .today-btn:hover {
+      color: var(--ink);
+      border-color: rgba(185, 136, 92, 0.55);
+    }
+
+    .boards {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: var(--gap);
+      align-items: stretch;
+      margin-bottom: clamp(0.875rem, 2.4cqi, 1.25rem);
+    }
+
+    .board-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: 0 1rem 2.75rem rgba(75, 58, 47, 0.09);
+      backdrop-filter: blur(1rem);
+      overflow: hidden;
+    }
+
+    .band {
+      margin: 0;
+      padding: 0.55rem 0.9rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.95rem, 1.8cqi, 1.1rem);
+      font-weight: 600;
+      text-align: center;
+      background: var(--band-bg, var(--acc-stone));
+    }
+
+    .band-sage { --band-bg: var(--acc-sage); }
+    .band-sand { --band-bg: var(--acc-sand); }
+    .band-taupe { --band-bg: var(--acc-taupe); }
+    .band-stone { --band-bg: var(--acc-stone); }
+    .band-latte { --band-bg: var(--acc-latte); }
+
+    .progress-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem;
+      align-items: center;
+      flex: 1;
+      padding: clamp(0.75rem, 1.8cqi, 1rem);
+    }
+
+    .chart-area {
+      display: grid;
+      gap: 0.4rem;
+      align-self: end;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: clamp(0.35rem, 1cqi, 0.7rem);
+      align-items: end;
+      height: clamp(8rem, 15cqi, 10rem);
+    }
+
+    .chart-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      min-width: 0;
+      height: 100%;
+    }
+
+    .chart-value {
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+
+    .chart-track {
+      display: flex;
+      align-items: flex-end;
+      width: min(100%, 1.3rem);
+      max-height: calc(100% - 1.2rem);
+      min-height: 0;
+      border-radius: 999px;
+      background: var(--chart-track);
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      width: 100%;
+      border-radius: 999px;
+      background: var(--chart-fill);
+    }
+
+    .chart-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: clamp(0.35rem, 1cqi, 0.7rem);
+    }
+
+    .chart-day {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.78rem;
+    }
+
+    .chart-day.today {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.4rem 0.2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    .ring {
+      --p: 0;
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: clamp(6rem, 11cqi, 7rem);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: conic-gradient(var(--chart-fill) calc(var(--p) * 1%), var(--chart-track) 0);
+    }
+
+    .ring::before {
+      content: "";
+      position: absolute;
+      inset: -0.5rem;
+      border-radius: 50%;
+      border: 2px dotted color-mix(in srgb, var(--chart-fill) 55%, transparent);
+    }
+
+    .ring b {
+      display: grid;
+      place-items: center;
+      width: 70%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--paper-strong);
+      font-size: clamp(1.15rem, 2.4cqi, 1.4rem);
+    }
+
+    .habit-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      flex: 1;
+      padding: clamp(0.75rem, 1.8cqi, 1rem);
+    }
+
+    .habit-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--gap);
+    }
+
+    .habit-form .add-btn {
+      min-width: 0;
+    }
+
+    .habit-scroll {
+      overflow-x: auto;
+    }
+
+    .habit-grid {
+      display: grid;
+      grid-template-columns: minmax(7.5rem, 1fr) repeat(7, 1.6rem) minmax(4.75rem, 7rem);
+      gap: 0.5rem 0.3rem;
+      align-items: center;
+      min-width: 26rem;
+    }
+
+    .habit-h {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.72rem;
+    }
+
+    .habit-h-name {
+      text-align: left;
+    }
+
+    .habit-empty {
+      grid-column: 1 / -1;
+    }
+
+    .habit-name {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+      min-width: 0;
+      font-size: 0.9rem;
+    }
+
+    .habit-name span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .habit-del {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 1.4rem;
+      height: 1.4rem;
+      border: 0;
+      border-radius: var(--radius);
+      color: var(--taupe);
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .habit-del:hover {
+      color: var(--ink);
+      background: rgba(255, 252, 246, 0.72);
+    }
+
+    :root[data-theme="dark"] .habit-del:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hcheck {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 1.45rem;
+      height: 1.45rem;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--check-bg);
+      cursor: pointer;
+    }
+
+    .hcheck input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hcheck svg {
+      width: 0.85rem;
+      height: 0.85rem;
+      opacity: 0;
+      stroke: var(--check-stroke);
+      stroke-width: 3;
+    }
+
+    .hcheck:has(input:checked) {
+      border-color: transparent;
+      background: color-mix(in srgb, var(--acc-sage) 75%, var(--check-bg));
+    }
+
+    .hcheck input:checked + svg {
+      opacity: 1;
+    }
+
+    .habit-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-width: 0;
+    }
+
+    .habit-meter {
+      flex: 1;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: var(--chart-track);
+      overflow: hidden;
+    }
+
+    .habit-meter i {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--chart-fill);
+    }
+
+    .habit-pct {
+      flex: 0 0 auto;
+      min-width: 2.3rem;
+      color: var(--muted);
+      text-align: right;
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
     }
 
     .add-panel {
       display: grid;
-      grid-template-columns: minmax(8.125rem, 11.25rem) minmax(0, 1fr) auto;
+      grid-template-columns: minmax(8.125rem, 12.5rem) minmax(0, 1fr) auto;
       gap: var(--gap);
       margin-bottom: clamp(0.875rem, 2.4cqi, 1.25rem);
       padding: clamp(0.625rem, 1.7cqi, 0.875rem);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--paper-strong);
-      box-shadow: 0 0.875rem 2.625rem rgba(82, 78, 93, 0.08);
+      box-shadow: 0 0.875rem 2.625rem rgba(75, 58, 47, 0.08);
     }
 
     select,
@@ -186,7 +551,7 @@
       height: var(--control);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 252, 246, 0.78);
       color: var(--ink);
       outline: none;
       font-size: clamp(0.95rem, 1.6cqi, 1rem);
@@ -206,9 +571,10 @@
     }
 
     select:focus,
-    input[type="text"]:focus {
-      border-color: rgba(121, 108, 190, 0.55);
-      box-shadow: 0 0 0 0.25rem rgba(121, 108, 190, 0.12);
+    input[type="text"]:focus,
+    textarea.note:focus {
+      border-color: rgba(185, 136, 92, 0.65);
+      box-shadow: 0 0 0 0.25rem rgba(185, 136, 92, 0.14);
     }
 
     .add-btn {
@@ -216,8 +582,8 @@
       place-items: center;
       border: 0;
       border-radius: var(--radius);
-      color: white;
-      background: #6f8f7f;
+      color: #fffcf6;
+      background: #5f7a63;
       cursor: pointer;
       transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
       min-width: min(100%, 8rem);
@@ -225,12 +591,12 @@
       padding: 0 clamp(1rem, 2cqi, 1.25rem);
       font-weight: 700;
       font-size: clamp(0.95rem, 1.6cqi, 1rem);
-      box-shadow: 0 0.625rem 1.5rem rgba(99, 129, 113, 0.24);
+      box-shadow: 0 0.625rem 1.5rem rgba(95, 122, 99, 0.28);
     }
 
     .add-btn:hover {
       transform: translateY(-1px);
-      background: #637f73;
+      background: #526a56;
     }
 
     .week {
@@ -241,28 +607,28 @@
     }
 
     .day {
-      min-height: clamp(18rem, 32cqi, 22.5rem);
+      min-height: clamp(16rem, 30cqi, 21rem);
       padding: clamp(0.75rem, 1.8cqi, 1rem);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--paper);
-      box-shadow: 0 1rem 2.75rem rgba(82, 78, 93, 0.09);
+      box-shadow: 0 1rem 2.75rem rgba(75, 58, 47, 0.09);
       backdrop-filter: blur(1rem);
     }
 
-    .day:nth-child(1) { --accent: var(--mint); }
-    .day:nth-child(2) { --accent: var(--peach); }
-    .day:nth-child(3) { --accent: var(--lavender); }
-    .day:nth-child(4) { --accent: var(--sky); }
-    .day:nth-child(5) { --accent: var(--rose); }
-    .day:nth-child(6) { --accent: var(--butter); }
-    .day:nth-child(7) { --accent: var(--sage); }
+    .day:nth-child(1) { --accent: var(--acc-sage); }
+    .day:nth-child(2) { --accent: var(--acc-sand); }
+    .day:nth-child(3) { --accent: var(--acc-taupe); }
+    .day:nth-child(4) { --accent: var(--acc-stone); }
+    .day:nth-child(5) { --accent: var(--acc-latte); }
+    .day:nth-child(6) { --accent: var(--acc-wheat); }
+    .day:nth-child(7) { --accent: var(--acc-moss); }
 
     .day.today {
-      border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+      border-color: color-mix(in srgb, var(--bronze) 55%, var(--line));
       box-shadow:
-        0 0 0 0.14rem color-mix(in srgb, var(--accent) 60%, transparent),
-        0 1rem 2.75rem rgba(82, 78, 93, 0.09);
+        0 0 0 0.14rem color-mix(in srgb, var(--bronze) 45%, transparent),
+        0 1rem 2.75rem rgba(75, 58, 47, 0.09);
     }
 
     .day-head {
@@ -271,31 +637,19 @@
       gap: 0.625rem;
       align-items: center;
       margin-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
-      padding-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
-      border-bottom: 1px solid var(--line);
+      padding: 0.5rem 0.65rem;
+      border-radius: calc(var(--radius) - 0.125rem);
+      background: var(--accent);
     }
 
     .day-title {
       display: flex;
       align-items: baseline;
-      gap: 0.4rem;
+      gap: 0.45rem;
       min-width: 0;
       margin: 0;
-      font-size: clamp(0.95rem, 1.55cqi, 1.02rem);
-    }
-
-    .mark {
-      width: clamp(0.75rem, 1.4cqi, 0.9rem);
-      height: clamp(0.75rem, 1.4cqi, 0.9rem);
-      flex: 0 0 auto;
-      align-self: center;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 0.31rem rgba(255, 255, 255, 0.7);
-    }
-
-    :root[data-theme="dark"] .mark {
-      box-shadow: 0 0 0 0.31rem rgba(255, 255, 255, 0.08);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.95rem, 1.55cqi, 1.05rem);
     }
 
     .day-name {
@@ -307,13 +661,13 @@
 
     .day-date {
       flex: 0 0 auto;
-      color: var(--muted);
+      color: color-mix(in srgb, var(--ink) 62%, var(--accent));
       font-size: clamp(0.76rem, 1.3cqi, 0.86rem);
       font-weight: 500;
     }
 
     .day.today .day-date {
-      color: color-mix(in srgb, var(--ink) 70%, var(--accent));
+      color: var(--ink);
       font-weight: 700;
     }
 
@@ -325,7 +679,7 @@
     }
 
     .count {
-      color: var(--muted);
+      color: color-mix(in srgb, var(--ink) 62%, var(--accent));
       font-size: clamp(0.8rem, 1.3cqi, 0.9rem);
     }
 
@@ -334,10 +688,10 @@
       place-items: center;
       width: clamp(1.6rem, 3cqi, 1.85rem);
       height: clamp(1.6rem, 3cqi, 1.85rem);
-      border: 1px solid var(--line);
+      border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
       border-radius: var(--radius);
       background: transparent;
-      color: var(--muted);
+      color: color-mix(in srgb, var(--ink) 68%, var(--accent));
       cursor: pointer;
       transition: transform 160ms ease, background 160ms ease, color 160ms ease, border-color 160ms ease;
     }
@@ -346,7 +700,6 @@
       transform: translateY(-1px);
       color: var(--ink);
       background: var(--paper-strong);
-      border-color: rgba(121, 108, 190, 0.4);
     }
 
     .move svg {
@@ -354,10 +707,83 @@
       height: 1rem;
     }
 
+    .prios {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
+      padding-bottom: clamp(0.625rem, 1.5cqi, 0.875rem);
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      max-width: 100%;
+      padding: 0.25rem 0.6rem 0.25rem 0.3rem;
+      border: 0;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 45%, var(--paper-strong));
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .chip b {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 1.05rem;
+      height: 1.05rem;
+      border-radius: 50%;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-size: 0.68rem;
+    }
+
+    .chip span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .add-prio {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.25rem 0.3rem;
+      font-size: 0.78rem;
+    }
+
+    .add-prio:hover {
+      color: var(--ink);
+    }
+
+    input.prio-edit {
+      flex: 1 1 8rem;
+      height: 1.85rem;
+      padding: 0 0.5rem;
+      border: 1px solid rgba(185, 136, 92, 0.55);
+      border-radius: 999px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    :root[data-theme="dark"] input.prio-edit {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
     .tasks {
       display: grid;
       gap: clamp(0.5rem, 1.2cqi, 0.7rem);
-      min-height: clamp(13rem, 25cqi, 17rem);
+      min-height: clamp(10rem, 20cqi, 13rem);
       align-content: start;
     }
 
@@ -368,9 +794,9 @@
       align-items: center;
       min-height: clamp(2.75rem, 5.2cqi, 3.25rem);
       padding: clamp(0.45rem, 1.1cqi, 0.65rem);
-      border: 1px solid rgba(82, 78, 93, 0.1);
+      border: 1px solid rgba(75, 58, 47, 0.1);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.62);
+      background: rgba(255, 252, 246, 0.62);
       --task-button: clamp(1.75rem, 3.4cqi, 2rem);
     }
 
@@ -390,7 +816,7 @@
       place-items: center;
       width: var(--task-button);
       height: var(--task-button);
-      border: 1px solid rgba(82, 78, 93, 0.18);
+      border: 1px solid rgba(75, 58, 47, 0.2);
       border-radius: 999px;
       background: var(--check-bg);
       cursor: pointer;
@@ -413,7 +839,7 @@
     }
 
     .task.done {
-      background: color-mix(in srgb, var(--accent) 34%, var(--done-base));
+      background: color-mix(in srgb, var(--accent) 32%, var(--done-base));
     }
 
     .task.done .check {
@@ -446,22 +872,17 @@
       height: var(--task-button);
       border: 0;
       border-radius: var(--radius);
-      color: #8b7d83;
+      color: var(--taupe);
       background: transparent;
       cursor: pointer;
     }
 
     .delete:hover {
-      color: #533f48;
-      background: rgba(255, 255, 255, 0.72);
-    }
-
-    :root[data-theme="dark"] .delete {
-      color: #b6a8af;
+      color: var(--ink);
+      background: rgba(255, 252, 246, 0.72);
     }
 
     :root[data-theme="dark"] .delete:hover {
-      color: #f0dde4;
       background: rgba(255, 255, 255, 0.08);
     }
 
@@ -470,7 +891,7 @@
       place-items: center;
       min-height: clamp(5rem, 10cqi, 6.25rem);
       padding: clamp(0.75rem, 1.8cqi, 1rem);
-      border: 1px dashed rgba(82, 78, 93, 0.18);
+      border: 1px dashed rgba(75, 58, 47, 0.22);
       border-radius: var(--radius);
       color: var(--muted);
       text-align: center;
@@ -481,6 +902,31 @@
       border-color: rgba(255, 255, 255, 0.16);
     }
 
+    .reflect {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+      gap: var(--gap);
+      margin-top: var(--gap);
+    }
+
+    textarea.note {
+      min-height: 5.5rem;
+      margin: clamp(0.6rem, 1.5cqi, 0.8rem);
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) - 0.125rem);
+      background: rgba(255, 252, 246, 0.62);
+      color: var(--ink);
+      outline: none;
+      resize: vertical;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    :root[data-theme="dark"] textarea.note {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
     @media (max-width: 61.25rem) {
       header {
         align-items: stretch;
@@ -489,6 +935,10 @@
 
       .panel {
         min-width: 0;
+      }
+
+      .boards {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -510,6 +960,14 @@
       .day {
         min-height: 0;
       }
+
+      .progress-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .ring-wrap {
+        padding-bottom: 0.6rem;
+      }
     }
   </style>
 </head>
@@ -518,7 +976,7 @@
     <header>
       <div>
         <h1>План на неделю</h1>
-        <p class="subtitle">Добавляй задачи по дням и отмечай готовое. Список сохраняется в этом браузере автоматически.</p>
+        <p class="subtitle">Добавляй задачи по дням и отмечай готовое. Листай недели стрелками — планировать можно и наперёд. Всё сохраняется в этом браузере автоматически.</p>
       </div>
       <div class="panel">
         <div class="summary" aria-live="polite">
@@ -533,6 +991,42 @@
       </div>
     </header>
 
+    <nav class="week-nav" aria-label="Навигация по неделям">
+      <button class="nav-btn" id="prevWeek" type="button" aria-label="Предыдущая неделя">‹</button>
+      <span class="week-range" id="weekRange"></span>
+      <button class="nav-btn" id="nextWeek" type="button" aria-label="Следующая неделя">›</button>
+      <button class="today-btn" id="todayBtn" type="button" hidden>Текущая неделя</button>
+    </nav>
+
+    <div class="boards">
+      <section class="board-card" aria-label="Еженедельный прогресс">
+        <h2 class="band band-sage">Еженедельный прогресс</h2>
+        <div class="progress-wrap">
+          <div class="chart-area">
+            <div class="chart" id="chartBars"></div>
+            <div class="chart-days" id="chartDays"></div>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring" id="progressRing"><b id="ringPct">0%</b></div>
+            <span id="ringCaption">Пока нет задач</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="board-card" aria-label="Ежедневные привычки">
+        <h2 class="band band-sand">Ежедневные привычки</h2>
+        <div class="habit-body">
+          <form class="habit-form" id="habitForm">
+            <input id="habitInput" type="text" autocomplete="off" maxlength="60" placeholder="Новая привычка">
+            <button class="add-btn" type="submit">Добавить</button>
+          </form>
+          <div class="habit-scroll">
+            <div class="habit-grid" id="habitGrid"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <form class="add-panel" id="taskForm">
       <select id="daySelect" aria-label="День недели"></select>
       <input id="taskInput" type="text" autocomplete="off" maxlength="120" placeholder="Новая задача">
@@ -540,6 +1034,21 @@
     </form>
 
     <section class="week" id="week" aria-label="Задачи на неделю"></section>
+
+    <div class="reflect" aria-label="Итоги недели">
+      <section class="board-card">
+        <h2 class="band band-taupe">Что было успешно?</h2>
+        <textarea class="note" data-note="success" placeholder="Заполни в конце недели"></textarea>
+      </section>
+      <section class="board-card">
+        <h2 class="band band-stone">Что можно улучшить?</h2>
+        <textarea class="note" data-note="improve" placeholder="Идеи на следующую неделю"></textarea>
+      </section>
+      <section class="board-card">
+        <h2 class="band band-latte">За что я благодарен?</h2>
+        <textarea class="note" data-note="gratitude" placeholder="Хотя бы одна мелочь"></textarea>
+      </section>
+    </div>
   </main>
 
   <template id="taskTemplate">
@@ -564,7 +1073,7 @@
   </template>
 
   <script>
-    const days = [
+    const dayNames = [
       "Понедельник",
       "Вторник",
       "Среда",
@@ -574,8 +1083,21 @@
       "Воскресенье"
     ];
 
-    const storageKey = "soft-week-todo-v1";
+    const dayShort = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
+
     const themeKey = "soft-week-theme";
+    const STORE = {
+      tasks: "soft-week-todo-v2",
+      habits: "soft-week-habits-v2",
+      prios: "soft-week-priorities-v2",
+      notes: "soft-week-notes-v2"
+    };
+    const LEGACY = {
+      tasks: "soft-week-todo-v1",
+      habits: "soft-week-habits-v1",
+      prios: "soft-week-priorities-v1",
+      notes: "soft-week-notes-v1"
+    };
 
     const week = document.querySelector("#week");
     const form = document.querySelector("#taskForm");
@@ -587,18 +1109,165 @@
     const themeToggle = document.querySelector("#themeToggle");
     const clearDoneBtn = document.querySelector("#clearDone");
     const clearWeekBtn = document.querySelector("#clearWeek");
+    const chartBars = document.querySelector("#chartBars");
+    const chartDays = document.querySelector("#chartDays");
+    const progressRing = document.querySelector("#progressRing");
+    const ringPct = document.querySelector("#ringPct");
+    const ringCaption = document.querySelector("#ringCaption");
+    const habitForm = document.querySelector("#habitForm");
+    const habitInput = document.querySelector("#habitInput");
+    const habitGrid = document.querySelector("#habitGrid");
+    const weekRange = document.querySelector("#weekRange");
+    const prevWeekBtn = document.querySelector("#prevWeek");
+    const nextWeekBtn = document.querySelector("#nextWeek");
+    const todayBtn = document.querySelector("#todayBtn");
+    const noteFields = document.querySelectorAll("textarea.note");
 
-    let tasks = loadTasks();
+    // ── даты ────────────────────────────────────────────────────────────
 
-    days.forEach((day, index) => {
-      const option = document.createElement("option");
-      option.value = String(index);
-      option.textContent = day;
-      daySelect.append(option);
-    });
+    function toISO(d) {
+      const p = (n) => String(n).padStart(2, "0");
+      return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+    }
 
-    // По умолчанию выбираем сегодняшний день
-    daySelect.value = String(todayIndex());
+    function fromISO(iso) {
+      const [y, m, d] = iso.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function addDays(iso, n) {
+      const d = fromISO(iso);
+      d.setDate(d.getDate() + n);
+      return toISO(d);
+    }
+
+    function mondayISO(date) {
+      const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+      return toISO(d);
+    }
+
+    function weekDates() {
+      return dayNames.map((_, i) => addDays(weekStart, i));
+    }
+
+    function fmtShort(iso) {
+      return fromISO(iso).toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
+    }
+
+    function fmtLong(iso, withYear) {
+      const opts = { day: "numeric", month: "long" };
+      if (withYear) opts.year = "numeric";
+      return fromISO(iso).toLocaleDateString("ru-RU", opts);
+    }
+
+    // ── хранилище ───────────────────────────────────────────────────────
+
+    function loadJSON(key, fallback) {
+      try {
+        const value = JSON.parse(localStorage.getItem(key));
+        return value ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function loadList(key) {
+      const value = loadJSON(key, []);
+      return Array.isArray(value) ? value : [];
+    }
+
+    function loadMap(key) {
+      const value = loadJSON(key, {});
+      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    }
+
+    function save(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {}
+    }
+
+    function makeId() {
+      return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
+    }
+
+    // Однократный перенос данных из старого формата (день недели 0–6 → дата)
+    function migrate() {
+      const monday = mondayISO(new Date());
+      const dates = dayNames.map((_, i) => addDays(monday, i));
+      const clampDay = (day) => Math.min(Math.max(Number(day) || 0, 0), 6);
+
+      if (localStorage.getItem(STORE.tasks) === null && localStorage.getItem(LEGACY.tasks) !== null) {
+        const old = loadList(LEGACY.tasks).filter((t) => t && typeof t.title === "string");
+        save(STORE.tasks, old.map((t) => ({
+          id: t.id || makeId(),
+          date: dates[clampDay(t.day)],
+          title: t.title,
+          done: Boolean(t.done)
+        })));
+      }
+
+      if (localStorage.getItem(STORE.habits) === null && localStorage.getItem(LEGACY.habits) !== null) {
+        const old = loadList(LEGACY.habits).filter((h) => h && typeof h.title === "string");
+        save(STORE.habits, old.map((h) => {
+          const marks = {};
+          dates.forEach((date, i) => {
+            if (h.days && h.days[i]) marks[date] = true;
+          });
+          return { id: h.id || makeId(), title: h.title, marks };
+        }));
+      }
+
+      if (localStorage.getItem(STORE.prios) === null && localStorage.getItem(LEGACY.prios) !== null) {
+        const old = loadJSON(LEGACY.prios, []);
+        const map = {};
+        if (Array.isArray(old)) {
+          dates.forEach((date, i) => {
+            const row = Array.isArray(old[i]) ? old[i].filter((s) => typeof s === "string" && s.trim() !== "") : [];
+            if (row.length) map[date] = row.slice(0, 3);
+          });
+        }
+        save(STORE.prios, map);
+      }
+
+      if (localStorage.getItem(STORE.notes) === null && localStorage.getItem(LEGACY.notes) !== null) {
+        const old = loadJSON(LEGACY.notes, {});
+        if (old && typeof old === "object" && !Array.isArray(old)) {
+          save(STORE.notes, { [monday]: old });
+        }
+      }
+    }
+
+    migrate();
+
+    let weekStart = mondayISO(new Date());
+    let tasks = loadList(STORE.tasks).filter((t) => t && typeof t.title === "string" && typeof t.date === "string");
+    let habits = loadList(STORE.habits)
+      .filter((h) => h && typeof h.title === "string")
+      .map((h) => ({
+        id: h.id || makeId(),
+        title: h.title,
+        marks: h.marks && typeof h.marks === "object" && !Array.isArray(h.marks) ? h.marks : {}
+      }));
+    let prios = loadMap(STORE.prios);
+    let notes = loadMap(STORE.notes);
+
+    function getPrios(date) {
+      const row = prios[date];
+      return Array.isArray(row)
+        ? row.filter((s) => typeof s === "string" && s.trim() !== "").slice(0, 3)
+        : [];
+    }
+
+    function setPrios(date, list) {
+      const clean = list.map((s) => s.trim()).filter(Boolean).slice(0, 3);
+      if (clean.length) prios[date] = clean;
+      else delete prios[date];
+      save(STORE.prios, prios);
+    }
+
+    // ── обработчики ─────────────────────────────────────────────────────
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -610,8 +1279,8 @@
       }
 
       tasks.push({
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
-        day: Number(daySelect.value),
+        id: makeId(),
+        date: weekDates()[Number(daySelect.value)],
         title,
         done: false
       });
@@ -621,19 +1290,64 @@
       saveAndRender();
     });
 
+    habitForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const title = habitInput.value.trim();
+
+      if (!title) {
+        habitInput.focus();
+        return;
+      }
+
+      habits.push({ id: makeId(), title, marks: {} });
+      habitInput.value = "";
+      habitInput.focus();
+      save(STORE.habits, habits);
+      renderHabits();
+    });
+
     clearDoneBtn.addEventListener("click", () => {
-      const doneCount = tasks.filter((task) => task.done).length;
+      const dates = weekDates();
+      const doneCount = tasks.filter((t) => t.done && dates.includes(t.date)).length;
       if (doneCount === 0) return;
-      if (!confirm(`Удалить выполненные задачи (${doneCount})?`)) return;
-      tasks = tasks.filter((task) => !task.done);
+      if (!confirm(`Удалить выполненные задачи этой недели (${doneCount})?`)) return;
+      tasks = tasks.filter((t) => !(t.done && dates.includes(t.date)));
       saveAndRender();
     });
 
     clearWeekBtn.addEventListener("click", () => {
-      if (tasks.length === 0) return;
-      if (!confirm("Удалить все задачи недели? Это действие необратимо.")) return;
-      tasks = [];
-      saveAndRender();
+      const dates = weekDates();
+      const weekNotes = notes[weekStart];
+      const hasAnything = tasks.some((t) => dates.includes(t.date))
+        || habits.some((h) => dates.some((date) => h.marks[date]))
+        || dates.some((date) => getPrios(date).length > 0)
+        || Boolean(weekNotes && Object.values(weekNotes).some((text) => text));
+      if (!hasAnything) return;
+      if (!confirm("Очистить эту неделю? Удалятся её задачи, приоритеты, отметки привычек и итоги. Сами привычки останутся.")) return;
+      tasks = tasks.filter((t) => !dates.includes(t.date));
+      habits.forEach((h) => dates.forEach((date) => { delete h.marks[date]; }));
+      dates.forEach((date) => { delete prios[date]; });
+      delete notes[weekStart];
+      save(STORE.tasks, tasks);
+      save(STORE.habits, habits);
+      save(STORE.prios, prios);
+      save(STORE.notes, notes);
+      syncWeek();
+    });
+
+    prevWeekBtn.addEventListener("click", () => {
+      weekStart = addDays(weekStart, -7);
+      syncWeek();
+    });
+
+    nextWeekBtn.addEventListener("click", () => {
+      weekStart = addDays(weekStart, 7);
+      syncWeek();
+    });
+
+    todayBtn.addEventListener("click", () => {
+      weekStart = mondayISO(new Date());
+      syncWeek();
     });
 
     themeToggle.addEventListener("click", () => {
@@ -643,6 +1357,15 @@
 
     applyTheme(document.documentElement.dataset.theme || localStorage.getItem(themeKey) || "light");
 
+    noteFields.forEach((field) => {
+      field.addEventListener("input", () => {
+        const current = notes[weekStart] && typeof notes[weekStart] === "object" ? notes[weekStart] : {};
+        current[field.dataset.note] = field.value;
+        notes[weekStart] = current;
+        save(STORE.notes, notes);
+      });
+    });
+
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
       themeToggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
@@ -651,64 +1374,142 @@
       } catch {}
     }
 
-    function todayIndex() {
-      return (new Date().getDay() + 6) % 7;
-    }
-
-    function dateForIndex(index) {
-      const d = new Date();
-      d.setHours(0, 0, 0, 0);
-      d.setDate(d.getDate() - todayIndex() + index);
-      return d;
-    }
-
-    function formatDate(d) {
-      return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
-    }
-
-    function moveIncomplete(index) {
-      const next = (index + 1) % 7;
-      tasks = tasks.map((task) =>
-        task.day === index && !task.done ? { ...task, day: next } : task
-      );
+    function moveIncomplete(date) {
+      const next = addDays(date, 1);
+      tasks = tasks.map((t) => t.date === date && !t.done ? { ...t, date: next } : t);
       saveAndRender();
     }
 
-    function loadTasks() {
-      try {
-        return JSON.parse(localStorage.getItem(storageKey)) || [];
-      } catch {
-        return [];
-      }
+    function saveAndRender() {
+      save(STORE.tasks, tasks);
+      render();
     }
 
-    function saveAndRender() {
-      localStorage.setItem(storageKey, JSON.stringify(tasks));
+    // ── отрисовка ───────────────────────────────────────────────────────
+
+    function buildDaySelect() {
+      const previous = daySelect.value;
+      daySelect.replaceChildren();
+      weekDates().forEach((date, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = `${dayNames[index]}, ${fmtShort(date)}`;
+        daySelect.append(option);
+      });
+      const todayIso = toISO(new Date());
+      const todayIdx = weekDates().indexOf(todayIso);
+      daySelect.value = todayIdx >= 0 ? String(todayIdx) : (previous || "0");
+    }
+
+    function syncWeek() {
+      const endIso = addDays(weekStart, 6);
+      const thisYear = new Date().getFullYear();
+      const withYear = fromISO(weekStart).getFullYear() !== thisYear || fromISO(endIso).getFullYear() !== thisYear;
+      weekRange.textContent = `${fmtLong(weekStart)} — ${fmtLong(endIso, withYear)}`;
+      todayBtn.hidden = weekStart === mondayISO(new Date());
+      buildDaySelect();
+      noteFields.forEach((field) => {
+        const weekNotes = notes[weekStart];
+        const value = weekNotes && typeof weekNotes[field.dataset.note] === "string" ? weekNotes[field.dataset.note] : "";
+        field.value = value;
+      });
       render();
+      renderHabits();
+    }
+
+    function renderPrios(container, date) {
+      container.replaceChildren();
+      const list = getPrios(date);
+
+      const editor = (index) => {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "prio-edit";
+        input.maxLength = 80;
+        input.placeholder = "Приоритет";
+        input.value = index < list.length ? list[index] : "";
+        let committed = false;
+        const commit = () => {
+          if (committed) return;
+          committed = true;
+          const text = input.value.trim();
+          const next = getPrios(date);
+          if (index < next.length) {
+            if (text) next[index] = text;
+            else next.splice(index, 1);
+          } else if (text) {
+            next.push(text);
+          }
+          setPrios(date, next);
+          render();
+        };
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            commit();
+          }
+          if (event.key === "Escape") {
+            committed = true;
+            render();
+          }
+        });
+        input.addEventListener("blur", commit);
+        return input;
+      };
+
+      list.forEach((text, index) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.title = "Изменить приоритет";
+        const num = document.createElement("b");
+        num.textContent = String(index + 1);
+        const label = document.createElement("span");
+        label.textContent = text;
+        chip.append(num, label);
+        chip.addEventListener("click", () => {
+          const input = editor(index);
+          chip.replaceWith(input);
+          input.focus();
+          input.select();
+        });
+        container.append(chip);
+      });
+
+      if (list.length < 3) {
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = "add-prio";
+        add.textContent = "+ приоритет";
+        add.addEventListener("click", () => {
+          const input = editor(list.length);
+          add.replaceWith(input);
+          input.focus();
+        });
+        container.append(add);
+      }
     }
 
     function render() {
       week.replaceChildren();
-      const today = todayIndex();
+      const todayIso = toISO(new Date());
 
-      days.forEach((day, index) => {
-        const dayTasks = tasks.filter((task) => task.day === index);
-        const doneCount = dayTasks.filter((task) => task.done).length;
+      weekDates().forEach((date, index) => {
+        const dayTasks = tasks.filter((t) => t.date === date);
+        const doneCount = dayTasks.filter((t) => t.done).length;
         const pending = dayTasks.length - doneCount;
-        const nextDay = days[(index + 1) % 7];
 
         const section = document.createElement("section");
-        section.className = index === today ? "day today" : "day";
+        section.className = date === todayIso ? "day today" : "day";
         section.innerHTML = `
           <div class="day-head">
             <h2 class="day-title">
-              <span class="mark"></span>
-              <span class="day-name">${day}</span>
-              <span class="day-date">${formatDate(dateForIndex(index))}</span>
+              <span class="day-name">${dayNames[index]}</span>
+              <span class="day-date">${fmtShort(date)}</span>
             </h2>
             <div class="day-tools">
               ${pending > 0 ? `
-                <button class="move" type="button" title="Перенести невыполненное на ${nextDay}" aria-label="Перенести невыполненное на ${nextDay}">
+                <button class="move" type="button" title="Перенести невыполненное на завтра" aria-label="Перенести невыполненное на завтра">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M5 12h14"></path>
                     <path d="M13 6l6 6-6 6"></path>
@@ -718,13 +1519,16 @@
               <span class="count">${doneCount}/${dayTasks.length}</span>
             </div>
           </div>
+          <div class="prios"></div>
           <div class="tasks"></div>
         `;
 
         const moveButton = section.querySelector(".move");
         if (moveButton) {
-          moveButton.addEventListener("click", () => moveIncomplete(index));
+          moveButton.addEventListener("click", () => moveIncomplete(date));
         }
+
+        renderPrios(section.querySelector(".prios"), date);
 
         const list = section.querySelector(".tasks");
 
@@ -741,6 +1545,131 @@
       });
 
       renderProgress();
+      renderChart();
+    }
+
+    function renderChart() {
+      const todayIso = toISO(new Date());
+      const perDay = weekDates().map((date) => {
+        const dayTasks = tasks.filter((t) => t.date === date);
+        return { total: dayTasks.length, done: dayTasks.filter((t) => t.done).length };
+      });
+      const max = Math.max(1, ...perDay.map((d) => d.total));
+
+      chartBars.replaceChildren();
+      chartDays.replaceChildren();
+
+      perDay.forEach((day, index) => {
+        const date = weekDates()[index];
+        const slot = document.createElement("div");
+        slot.className = "chart-slot";
+        slot.title = `${dayNames[index]}, ${fmtShort(date)}: выполнено ${day.done} из ${day.total}`;
+
+        const value = document.createElement("span");
+        value.className = "chart-value";
+        value.textContent = day.total > 0 ? String(day.done) : "";
+
+        const track = document.createElement("div");
+        track.className = "chart-track";
+        track.style.height = `${(day.total / max) * 100}%`;
+
+        const fill = document.createElement("div");
+        fill.className = "chart-fill";
+        fill.style.height = day.total > 0 ? `${(day.done / day.total) * 100}%` : "0";
+
+        track.append(fill);
+        slot.append(value, track);
+        chartBars.append(slot);
+
+        const label = document.createElement("span");
+        label.className = date === todayIso ? "chart-day today" : "chart-day";
+        label.textContent = dayShort[index];
+        chartDays.append(label);
+      });
+    }
+
+    function renderHabits() {
+      habitGrid.replaceChildren();
+      const dates = weekDates();
+
+      if (habits.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty habit-empty";
+        empty.textContent = "Добавь привычки — например, «Вода», «Прогулка», «Чтение».";
+        habitGrid.append(empty);
+        return;
+      }
+
+      ["Привычка", ...dayShort, "Прогресс"].forEach((text, index) => {
+        const cell = document.createElement("span");
+        cell.className = index === 0 ? "habit-h habit-h-name" : "habit-h";
+        cell.textContent = text;
+        habitGrid.append(cell);
+      });
+
+      habits.forEach((habit) => {
+        const name = document.createElement("div");
+        name.className = "habit-name";
+        const title = document.createElement("span");
+        title.textContent = habit.title;
+        title.title = habit.title;
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "habit-del";
+        del.textContent = "✕";
+        del.title = "Удалить привычку";
+        del.setAttribute("aria-label", `Удалить привычку «${habit.title}»`);
+        del.addEventListener("click", () => {
+          if (!confirm(`Удалить привычку «${habit.title}»?`)) return;
+          habits = habits.filter((item) => item.id !== habit.id);
+          save(STORE.habits, habits);
+          renderHabits();
+        });
+        name.append(title, del);
+        habitGrid.append(name);
+
+        const fill = document.createElement("i");
+        const pctLabel = document.createElement("span");
+
+        const updateProgress = () => {
+          const doneCount = dates.filter((date) => habit.marks[date]).length;
+          const pct = Math.round((doneCount / 7) * 100);
+          fill.style.width = `${pct}%`;
+          pctLabel.textContent = `${pct}%`;
+        };
+
+        dates.forEach((date, dayIndex) => {
+          const box = document.createElement("label");
+          box.className = "hcheck";
+          box.title = `${habit.title} — ${dayNames[dayIndex]}, ${fmtShort(date)}`;
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.checked = Boolean(habit.marks[date]);
+          input.setAttribute("aria-label", `${habit.title} — ${dayNames[dayIndex]}, ${fmtShort(date)}`);
+          input.addEventListener("change", () => {
+            if (input.checked) habit.marks[date] = true;
+            else delete habit.marks[date];
+            save(STORE.habits, habits);
+            updateProgress();
+          });
+          box.append(input);
+          box.insertAdjacentHTML(
+            "beforeend",
+            '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.2 4.1L19 7"></path></svg>'
+          );
+          habitGrid.append(box);
+        });
+
+        const progress = document.createElement("div");
+        progress.className = "habit-progress";
+        const meter = document.createElement("div");
+        meter.className = "habit-meter";
+        meter.append(fill);
+        pctLabel.className = "habit-pct";
+        updateProgress();
+        progress.append(meter, pctLabel);
+        habitGrid.append(progress);
+      });
     }
 
     function createTask(task) {
@@ -767,15 +1696,21 @@
     }
 
     function renderProgress() {
-      const total = tasks.length;
-      const done = tasks.filter((task) => task.done).length;
+      const dates = weekDates();
+      const weekTasks = tasks.filter((t) => dates.includes(t.date));
+      const total = weekTasks.length;
+      const done = weekTasks.filter((t) => t.done).length;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
       progressNumber.textContent = `${done}/${total}`;
-      progressText.textContent = total === 0
-        ? "Пока нет задач"
-        : `Выполнено ${Math.round((done / total) * 100)}%`;
+      progressText.textContent = total === 0 ? "Пока нет задач" : `Выполнено ${pct}%`;
+
+      progressRing.style.setProperty("--p", pct);
+      ringPct.textContent = `${pct}%`;
+      ringCaption.textContent = total === 0 ? "Пока нет задач" : `${done} из ${total} выполнено`;
     }
 
-    render();
+    syncWeek();
   </script>
 </body>
 </html>
