@@ -128,33 +128,21 @@
       line-height: 1.5;
     }
 
+    .daily-quote {
+      margin: 0 0 0.45rem;
+      max-width: 42rem;
+      color: var(--olive);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.02rem, 2cqi, 1.25rem);
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
     .panel {
       display: flex;
       flex-direction: column;
       gap: var(--gap);
       min-width: min(100%, 15rem);
-    }
-
-    .summary {
-      padding: clamp(0.875rem, 2cqi, 1.125rem);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--paper);
-      backdrop-filter: blur(1.125rem);
-      box-shadow: 0 1.125rem 3rem rgba(75, 58, 47, 0.1);
-    }
-
-    .summary strong {
-      display: block;
-      font-size: clamp(1.75rem, 4cqi, 2.25rem);
-      line-height: 1;
-    }
-
-    .summary span {
-      display: block;
-      margin-top: 0.45rem;
-      color: var(--muted);
-      font-size: clamp(0.85rem, 1.4cqi, 0.95rem);
     }
 
     .toolbar {
@@ -303,6 +291,11 @@
       height: 100%;
     }
 
+    .chart-slot.has-debt .chart-track {
+      outline: 2px solid color-mix(in srgb, var(--bronze) 52%, transparent);
+      outline-offset: 2px;
+    }
+
     .chart-value {
       color: var(--muted);
       font-size: 0.75rem;
@@ -446,20 +439,22 @@
       flex: 0 0 auto;
       display: grid;
       place-items: center;
-      width: 1.4rem;
-      height: 1.4rem;
-      border: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 1px solid color-mix(in srgb, var(--bronze) 30%, var(--line));
       border-radius: var(--radius);
-      color: var(--taupe);
+      color: color-mix(in srgb, var(--ink) 55%, var(--bronze));
       background: transparent;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       line-height: 1;
+      transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
     }
 
     .habit-del:hover {
-      color: var(--ink);
-      background: rgba(255, 252, 246, 0.72);
+      color: #fffcf6;
+      border-color: transparent;
+      background: color-mix(in srgb, var(--bronze) 72%, var(--ink));
     }
 
     :root[data-theme="dark"] .habit-del:hover {
@@ -607,13 +602,16 @@
     }
 
     .day {
-      min-height: clamp(16rem, 30cqi, 21rem);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      height: clamp(19rem, 42cqi, 26rem);
       padding: clamp(0.75rem, 1.8cqi, 1rem);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--paper);
       box-shadow: 0 1rem 2.75rem rgba(75, 58, 47, 0.09);
       backdrop-filter: blur(1rem);
+      overflow: hidden;
     }
 
     .day:nth-child(1) { --accent: var(--acc-sage); }
@@ -626,6 +624,7 @@
 
     .day.today {
       border-color: color-mix(in srgb, var(--bronze) 55%, var(--line));
+      background: color-mix(in srgb, var(--acc-sage) 22%, var(--paper));
       box-shadow:
         0 0 0 0.14rem color-mix(in srgb, var(--bronze) 45%, transparent),
         0 1rem 2.75rem rgba(75, 58, 47, 0.09);
@@ -650,6 +649,7 @@
       margin: 0;
       font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(0.95rem, 1.55cqi, 1.05rem);
+      max-width: 100%;
     }
 
     .day-name {
@@ -676,11 +676,6 @@
       align-items: center;
       gap: 0.45rem;
       flex: 0 0 auto;
-    }
-
-    .count {
-      color: color-mix(in srgb, var(--ink) 62%, var(--accent));
-      font-size: clamp(0.8rem, 1.3cqi, 0.9rem);
     }
 
     .move {
@@ -733,19 +728,37 @@
       border-radius: 999px;
       background: color-mix(in srgb, var(--accent) 45%, var(--paper-strong));
       color: var(--ink);
-      cursor: pointer;
+      cursor: grab;
+      touch-action: none;
       text-align: left;
       font-size: 0.8rem;
       font-weight: 600;
     }
 
-    .chip[draggable="true"] {
-      cursor: grab;
-    }
-
     .chip.dragging,
     .task.dragging {
       opacity: 0.45;
+    }
+
+    .drag-ghost {
+      position: fixed;
+      z-index: 50;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      opacity: 0.92;
+      transform: rotate(-1.5deg);
+      box-shadow: 0 1.25rem 2.5rem rgba(36, 30, 24, 0.3);
+    }
+
+    body.dnd-active,
+    body.dnd-active * {
+      cursor: grabbing !important;
+    }
+
+    body.dnd-active {
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .chip b {
@@ -779,6 +792,63 @@
       color: var(--ink);
     }
 
+    .prio-picker {
+      flex: 1 1 100%;
+      display: grid;
+      gap: 0.45rem;
+      padding: 0.55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-strong);
+    }
+
+    .prio-picker-list {
+      display: grid;
+      gap: 0.35rem;
+      max-height: 10rem;
+      overflow: auto;
+    }
+
+    .prio-option {
+      display: grid;
+      grid-template-columns: 1rem minmax(0, 1fr);
+      gap: 0.45rem;
+      align-items: center;
+      color: var(--ink);
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .prio-option input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--olive);
+    }
+
+    .prio-picker-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.45rem;
+    }
+
+    .mini-btn {
+      height: 1.8rem;
+      padding: 0 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .mini-btn.primary {
+      border-color: transparent;
+      background: #5f7a63;
+      color: #fffcf6;
+    }
+
     input.prio-edit {
       flex: 1 1 8rem;
       height: 1.85rem;
@@ -798,28 +868,42 @@
     .tasks {
       display: grid;
       gap: clamp(0.5rem, 1.2cqi, 0.7rem);
-      min-height: clamp(10rem, 20cqi, 13rem);
       align-content: start;
       padding: 0.125rem;
       border: 1px dashed transparent;
       border-radius: var(--radius);
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .task {
       display: grid;
-      grid-template-columns: var(--task-button) minmax(0, 1fr) var(--task-button);
-      gap: clamp(0.45rem, 1.1cqi, 0.65rem);
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.3rem;
       align-items: center;
-      min-height: clamp(2.75rem, 5.2cqi, 3.25rem);
-      padding: clamp(0.45rem, 1.1cqi, 0.65rem);
+      min-height: 2.25rem;
+      padding: 0.38rem 0.35rem 0.38rem 0.55rem;
       border: 1px solid rgba(75, 58, 47, 0.1);
       border-radius: var(--radius);
       background: rgba(255, 252, 246, 0.62);
-      --task-button: clamp(1.75rem, 3.4cqi, 2rem);
+      cursor: pointer;
     }
 
-    .task[draggable="true"] {
+    .task-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.05rem;
+    }
+
+    .task {
       cursor: grab;
+      touch-action: none;
+    }
+
+    .task.moved {
+      border-left: 0.25rem solid var(--bronze);
+      background: color-mix(in srgb, var(--acc-wheat) 24%, rgba(255, 252, 246, 0.62));
     }
 
     :root[data-theme="dark"] .task {
@@ -827,50 +911,13 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
-    .task input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .check {
-      display: grid;
-      place-items: center;
-      width: var(--task-button);
-      height: var(--task-button);
-      border: 1px solid rgba(75, 58, 47, 0.2);
-      border-radius: 999px;
-      background: var(--check-bg);
-      cursor: pointer;
-    }
-
-    :root[data-theme="dark"] .check {
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .check svg,
     .delete svg {
-      width: clamp(0.95rem, 1.8cqi, 1.1rem);
-      height: clamp(0.95rem, 1.8cqi, 1.1rem);
-    }
-
-    .check svg {
-      opacity: 0;
-      stroke: var(--check-stroke);
-      stroke-width: 3;
+      width: 0.85rem;
+      height: 0.85rem;
     }
 
     .task.done {
       background: color-mix(in srgb, var(--accent) 32%, var(--done-base));
-    }
-
-    .task.done .check {
-      border-color: transparent;
-      background: var(--check-bg);
-    }
-
-    .task.done .check svg {
-      opacity: 1;
     }
 
     .task.done .text {
@@ -880,8 +927,9 @@
 
     .task-body {
       display: flex;
+      flex-wrap: wrap;
       align-items: baseline;
-      gap: 0.45rem;
+      gap: 0.2rem 0.45rem;
       min-width: 0;
     }
 
@@ -898,14 +946,13 @@
       overflow-wrap: break-word;
       word-break: normal;
       hyphens: auto;
-      font-size: clamp(0.92rem, 1.55cqi, 1rem);
-      line-height: 1.35;
+      font-size: 0.86rem;
+      line-height: 1.25;
     }
 
     .quick-add {
       width: 100%;
       height: 2.5rem;
-      margin-top: clamp(0.5rem, 1.2cqi, 0.7rem);
       padding: 0 0.75rem;
       border: 1px solid rgba(185, 136, 92, 0.55);
       border-radius: var(--radius);
@@ -914,24 +961,57 @@
       outline: none;
     }
 
-    .delete {
+    .quick-add-slot {
+      min-height: 2.5rem;
+      margin-top: clamp(0.5rem, 1.2cqi, 0.7rem);
+    }
+
+    .delete,
+    .edit-task {
       display: grid;
       place-items: center;
-      width: var(--task-button);
-      height: var(--task-button);
+      width: 1.45rem;
+      height: 1.45rem;
       border: 0;
       border-radius: var(--radius);
       color: var(--taupe);
       background: transparent;
       cursor: pointer;
+      line-height: 1;
     }
 
-    .delete:hover {
+    .delete {
+      font-size: 1rem;
+    }
+
+    .edit-task {
+      font-size: 0.82rem;
+    }
+
+    .delete:hover,
+    .edit-task:hover {
       color: var(--ink);
       background: rgba(255, 252, 246, 0.72);
     }
 
-    :root[data-theme="dark"] .delete:hover {
+    :root[data-theme="dark"] .delete:hover,
+    :root[data-theme="dark"] .edit-task:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    input.task-edit {
+      width: 100%;
+      height: 1.95rem;
+      padding: 0 0.5rem;
+      border: 1px solid rgba(185, 136, 92, 0.55);
+      border-radius: var(--radius);
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    :root[data-theme="dark"] input.task-edit {
       background: rgba(255, 255, 255, 0.08);
     }
 
@@ -949,6 +1029,202 @@
 
     :root[data-theme="dark"] .empty {
       border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .confirm-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+    }
+
+    .confirm-pop {
+      position: fixed;
+      z-index: 41;
+      width: min(19rem, calc(100vw - 1.5rem));
+      padding: 0.85rem 0.9rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-strong);
+      box-shadow: 0 1rem 2.75rem rgba(36, 30, 24, 0.24);
+      animation: pop-in 140ms ease;
+    }
+
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(0.35rem) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .confirm-msg {
+      margin: 0 0 0.7rem;
+      color: var(--ink);
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .confirm-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.45rem;
+    }
+
+    .confirm-btn {
+      height: 1.95rem;
+      padding: 0 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+    }
+
+    .confirm-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .confirm-btn.primary {
+      border-color: transparent;
+      background: #5f7a63;
+      color: #fffcf6;
+    }
+
+    .confirm-btn.danger {
+      border-color: color-mix(in srgb, var(--bronze) 50%, var(--line));
+      color: color-mix(in srgb, var(--ink) 60%, var(--bronze));
+    }
+
+    .confirm-btn.danger:hover {
+      background: color-mix(in srgb, var(--bronze) 14%, transparent);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .focus-modal[hidden] {
+      display: none;
+    }
+
+    .focus-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: clamp(0.75rem, 3cqi, 2rem);
+      background: rgba(36, 30, 24, 0.3);
+      backdrop-filter: blur(0.75rem);
+    }
+
+    .focus-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: var(--gap);
+      width: min(46rem, 100%);
+      max-height: min(42rem, calc(100vh - 2rem));
+      padding: clamp(0.85rem, 2.2cqi, 1.25rem);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-strong);
+      box-shadow: 0 1.5rem 4rem rgba(36, 30, 24, 0.26);
+    }
+
+    .focus-head {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--gap);
+      align-items: flex-start;
+      padding-bottom: var(--gap);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .focus-title {
+      margin: 0 0 0.25rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 4cqi, 2rem);
+      line-height: 1.05;
+    }
+
+    .focus-subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .focus-close {
+      flex: 0 0 auto;
+      height: 2rem;
+      padding: 0 0.7rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .focus-list {
+      display: grid;
+      gap: 0.6rem;
+      overflow: auto;
+      padding-right: 0.25rem;
+    }
+
+    .focus-task {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 1.5rem;
+      gap: 0.6rem;
+      align-items: center;
+      min-height: 2.75rem;
+      padding: 0.55rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 252, 246, 0.68);
+      cursor: pointer;
+    }
+
+    :root[data-theme="dark"] .focus-task {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .focus-task.done {
+      background: color-mix(in srgb, var(--acc-sage) 36%, var(--done-base));
+    }
+
+    .focus-task.done .focus-edit {
+      color: color-mix(in srgb, var(--ink) 55%, transparent);
+      text-decoration: line-through;
+    }
+
+    .focus-task.moved {
+      border-left: 0.25rem solid var(--bronze);
+    }
+
+    .focus-edit {
+      width: 100%;
+      min-height: 2.25rem;
+      padding: 0 0.65rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .focus-edit:focus {
+      border-color: rgba(185, 136, 92, 0.55);
+      background: var(--paper-strong);
+    }
+
+    .focus-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--gap);
+      padding-top: var(--gap);
+      border-top: 1px solid var(--line);
     }
 
     .reflect {
@@ -1006,12 +1282,76 @@
         width: 100%;
       }
 
+      .toolbar {
+        flex-direction: column;
+      }
+
+      .ghost-btn {
+        width: 100%;
+      }
+
+      .habit-form {
+        grid-template-columns: 1fr;
+      }
+
+      .habit-form .add-btn {
+        width: 100%;
+      }
+
       .day {
         min-height: 0;
       }
 
+      .day-head {
+        align-items: flex-start;
+      }
+
+      .day-title {
+        font-size: 0.98rem;
+      }
+
+      .day-quote {
+        white-space: normal;
+      }
+
       .progress-wrap {
         grid-template-columns: 1fr;
+      }
+
+      .chart {
+        height: 8rem;
+      }
+
+      .focus-modal {
+        padding: 0.6rem;
+        align-items: stretch;
+      }
+
+      .focus-panel {
+        max-height: calc(100vh - 1.2rem);
+      }
+
+      .focus-head,
+      .focus-form {
+        grid-template-columns: 1fr;
+      }
+
+      .focus-head {
+        flex-direction: column;
+      }
+
+      .focus-close,
+      .focus-form .add-btn {
+        width: 100%;
+      }
+
+      .focus-task {
+        grid-template-columns: var(--task-button) minmax(0, 1fr);
+      }
+
+      .focus-task .delete {
+        grid-column: 2;
+        justify-self: end;
       }
 
       .ring-wrap {
@@ -1024,15 +1364,13 @@
   <main class="app">
     <header>
       <div>
-        <h1>План на неделю</h1>
+        <h1>Недельный план</h1>
+        <p class="daily-quote" id="dailyQuote"></p>
         <p class="subtitle">Добавляй задачи по дням и отмечай готовое. Листай недели стрелками — планировать можно и наперёд. Всё сохраняется в этом браузере автоматически.</p>
       </div>
       <div class="panel">
-        <div class="summary" aria-live="polite">
-          <strong id="progressNumber">0/0</strong>
-          <span id="progressText">Пока нет задач</span>
-        </div>
         <div class="toolbar">
+          <button class="ghost-btn" id="focusDayBtn" type="button">🎯 Фокус дня</button>
           <button class="ghost-btn" id="themeToggle" type="button">🌙 Тёмная тема</button>
           <button class="ghost-btn" id="clearDone" type="button">Очистить выполненные</button>
           <button class="ghost-btn" id="clearWeek" type="button">Очистить неделю</button>
@@ -1100,27 +1438,33 @@
     </div>
   </main>
 
+  <div class="focus-modal" id="focusModal" role="dialog" aria-modal="true" aria-labelledby="focusTitle" hidden>
+    <section class="focus-panel">
+      <header class="focus-head">
+        <div>
+          <h2 class="focus-title" id="focusTitle">Фокус дня</h2>
+          <p class="focus-subtitle" id="focusSubtitle"></p>
+        </div>
+        <button class="focus-close" id="focusClose" type="button">Закрыть</button>
+      </header>
+      <div class="focus-list" id="focusList"></div>
+      <form class="focus-form" id="focusForm">
+        <input id="focusInput" type="text" autocomplete="off" maxlength="120" placeholder="Новая задача">
+        <button class="add-btn" type="submit">Добавить</button>
+      </form>
+    </section>
+  </div>
+
   <template id="taskTemplate">
     <article class="task">
-      <label class="check" title="Отметить выполнение">
-        <input type="checkbox">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M5 12.5l4.2 4.1L19 7"></path>
-        </svg>
-      </label>
       <span class="task-body">
         <span class="task-time" hidden></span>
         <span class="text"></span>
       </span>
-      <button class="delete" type="button" title="Удалить задачу" aria-label="Удалить задачу">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 7h16"></path>
-          <path d="M10 11v6"></path>
-          <path d="M14 11v6"></path>
-          <path d="M6 7l1 13h10l1-13"></path>
-          <path d="M9 7V4h6v3"></path>
-        </svg>
-      </button>
+      <span class="task-tools">
+        <button class="edit-task" type="button" title="Изменить задачу" aria-label="Изменить задачу">✎</button>
+        <button class="delete" type="button" title="Удалить задачу" aria-label="Удалить задачу">×</button>
+      </span>
     </article>
   </template>
 
@@ -1136,6 +1480,15 @@
     ];
 
     const dayShort = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
+    const dayQuotes = [
+      "Маленький шаг сегодня лучше большого плана на завтра",
+      "Сначала важное, потом всё остальное",
+      "Темп важнее рывка",
+      "Один фокус делает день спокойнее",
+      "Закрой главное до конца дня",
+      "Лёгкий порядок освобождает голову",
+      "Отдых тоже часть плана"
+    ];
 
     const themeKey = "soft-week-theme";
     const STORE = {
@@ -1155,8 +1508,7 @@
     const form = document.querySelector("#taskForm");
     const daySelect = document.querySelector("#daySelect");
     const taskInput = document.querySelector("#taskInput");
-    const progressNumber = document.querySelector("#progressNumber");
-    const progressText = document.querySelector("#progressText");
+    const dailyQuote = document.querySelector("#dailyQuote");
     const template = document.querySelector("#taskTemplate");
     const themeToggle = document.querySelector("#themeToggle");
     const clearDoneBtn = document.querySelector("#clearDone");
@@ -1174,6 +1526,15 @@
     const nextWeekBtn = document.querySelector("#nextWeek");
     const todayBtn = document.querySelector("#todayBtn");
     const noteFields = document.querySelectorAll("textarea.note");
+    const focusModal = document.querySelector("#focusModal");
+    const focusTitle = document.querySelector("#focusTitle");
+    const focusSubtitle = document.querySelector("#focusSubtitle");
+    const focusList = document.querySelector("#focusList");
+    const focusForm = document.querySelector("#focusForm");
+    const focusInput = document.querySelector("#focusInput");
+    const focusClose = document.querySelector("#focusClose");
+    const focusDayBtn = document.querySelector("#focusDayBtn");
+    let focusDate = "";
 
     // ── даты ────────────────────────────────────────────────────────────
 
@@ -1201,6 +1562,10 @@
 
     function weekDates() {
       return dayNames.map((_, i) => addDays(weekStart, i));
+    }
+
+    function selectableDates(weeks = 5) {
+      return Array.from({ length: weeks * 7 }, (_, i) => addDays(weekStart, i));
     }
 
     function fmtShort(iso) {
@@ -1338,6 +1703,10 @@
         .map((task, index) => ({ task, index }))
         .filter((item) => item.task.date === date)
         .sort((a, b) => {
+          // перенесённые задачи всегда идут первыми
+          const aMoved = (Number(a.task.movedCount) || 0) > 0 ? 0 : 1;
+          const bMoved = (Number(b.task.movedCount) || 0) > 0 ? 0 : 1;
+          if (aMoved !== bMoved) return aMoved - bMoved;
           const aTime = a.task.time || "99:99";
           const bTime = b.task.time || "99:99";
           return aTime.localeCompare(bTime) || taskOrderValue(a.task, a.index) - taskOrderValue(b.task, b.index);
@@ -1356,13 +1725,25 @@
       tasks.push({
         id: makeId(),
         date,
+        originalDate: date,
         title: parsed.title,
         time: parsed.time,
         order: nextTaskOrder(date),
+        movedCount: 0,
         done: false
       });
       saveAndRender();
       return true;
+    }
+
+    function updateTask(taskId, patch) {
+      tasks = tasks.map((task) => task.id === taskId ? { ...task, ...patch } : task);
+      saveAndRender();
+    }
+
+    function deleteTask(taskId) {
+      tasks = tasks.filter((task) => task.id !== taskId);
+      saveAndRender();
     }
 
     function reorderTasks(date, orderedIds) {
@@ -1373,11 +1754,107 @@
       );
     }
 
-    function moveTask(taskId, targetDate, beforeId = "") {
+    // Аккуратное всплывающее подтверждение в стиле приложения (вместо нативного confirm)
+    function showConfirm({ anchor, message, actions }) {
+      return new Promise((resolve) => {
+        const layer = document.createElement("div");
+        layer.className = "confirm-layer";
+        const pop = document.createElement("div");
+        pop.className = "confirm-pop";
+        pop.setAttribute("role", "dialog");
+        pop.setAttribute("aria-modal", "true");
+
+        const msg = document.createElement("p");
+        msg.className = "confirm-msg";
+        msg.textContent = message;
+
+        const row = document.createElement("div");
+        row.className = "confirm-actions";
+
+        let settled = false;
+        const finish = (value) => {
+          if (settled) return;
+          settled = true;
+          document.removeEventListener("keydown", onKey, true);
+          layer.remove();
+          pop.remove();
+          resolve(value);
+        };
+
+        actions.forEach((action) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "confirm-btn" + (action.kind ? " " + action.kind : "");
+          btn.textContent = action.label;
+          btn.addEventListener("click", () => finish(action.value));
+          row.append(btn);
+        });
+
+        pop.append(msg, row);
+        layer.addEventListener("pointerdown", () => finish(null));
+        document.body.append(layer, pop);
+
+        const rect = pop.getBoundingClientRect();
+        const margin = 12;
+        let top;
+        let left;
+        if (anchor && anchor.getBoundingClientRect) {
+          const ar = anchor.getBoundingClientRect();
+          top = ar.top + Math.min(ar.height / 2, 40);
+          left = ar.left + ar.width / 2 - rect.width / 2;
+        } else {
+          top = window.innerHeight / 2 - rect.height / 2;
+          left = window.innerWidth / 2 - rect.width / 2;
+        }
+        left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin));
+        top = Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin));
+        pop.style.top = `${top}px`;
+        pop.style.left = `${left}px`;
+
+        const onKey = (event) => {
+          if (event.key === "Escape") {
+            event.stopPropagation();
+            finish(null);
+          }
+        };
+        document.addEventListener("keydown", onKey, true);
+        const firstBtn = row.querySelector("button");
+        if (firstBtn) firstBtn.focus();
+      });
+    }
+
+    function askActuality(task, count, anchor) {
+      return showConfirm({
+        anchor,
+        message: `«${task.title}» переносится уже ${count}-й раз. Задача ещё актуальна?`,
+        actions: [
+          { label: "Да, перенести", kind: "primary", value: "move" },
+          { label: "Нет, удалить", kind: "danger", value: "delete" }
+        ]
+      });
+    }
+
+    async function moveTask(taskId, targetDate, beforeId = "", anchor = null) {
       const moving = tasks.find((task) => task.id === taskId);
       if (!moving) return;
+      const isDateChange = moving.date !== targetDate;
+      const nextMovedCount = (Number(moving.movedCount) || 0) + (isDateChange ? 1 : 0);
 
-      tasks = tasks.map((task) => task.id === taskId ? { ...task, date: targetDate } : task);
+      if (isDateChange && nextMovedCount >= 2) {
+        const choice = await askActuality(moving, nextMovedCount, anchor);
+        if (choice === "delete") {
+          deleteTask(taskId);
+          return;
+        }
+        if (choice !== "move") return;
+      }
+
+      tasks = tasks.map((task) => task.id === taskId ? {
+        ...task,
+        date: targetDate,
+        originalDate: task.originalDate || task.date,
+        movedCount: nextMovedCount
+      } : task);
       const targetIds = sortedTasksForDate(targetDate)
         .filter((task) => task.id !== taskId)
         .map((task) => task.id);
@@ -1401,6 +1878,22 @@
       render();
     }
 
+    function dayStats(date) {
+      const current = tasks.filter((task) => task.date === date);
+      const outbound = tasks.filter((task) => (task.originalDate || task.date) === date && task.date !== date);
+      const debt = outbound.filter((task) => !task.done);
+      const done = current.filter((task) => task.done).length + outbound.filter((task) => task.done).length;
+      const total = current.length + outbound.length;
+      return {
+        current,
+        outbound,
+        debt,
+        done,
+        total,
+        pct: total === 0 ? 0 : Math.round((done / total) * 100)
+      };
+    }
+
     function beforeTaskIdFromPoint(container, y) {
       const items = [...container.querySelectorAll(".task:not(.dragging)")];
       const next = items.find((item) => y < item.getBoundingClientRect().top + item.getBoundingClientRect().height / 2);
@@ -1416,6 +1909,139 @@
       return next ? Number(next.dataset.prioIndex) : -1;
     }
 
+    // Единый drag-and-drop на Pointer Events: мышь тянет сразу по порогу сдвига,
+    // тач — после короткого удержания (иначе конфликтует со скроллом страницы).
+    function manualScroll(el, dy) {
+      if (!dy) return;
+      const scrollHost = el ? el.closest(".tasks") : null;
+      if (scrollHost) {
+        const before = scrollHost.scrollTop;
+        scrollHost.scrollTop += dy;
+        dy -= scrollHost.scrollTop - before;
+      }
+      if (Math.abs(dy) > 0.5) {
+        document.scrollingElement.scrollTop += dy;
+      }
+    }
+
+    function attachPointerDrag(el, { dropSelector, computeInsertion, onDrop, onDragChange }) {
+      el.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        const interactive = event.target.closest("button, input, textarea, select");
+        if (interactive && interactive !== el) return;
+
+        const pointerId = event.pointerId;
+        const isTouch = event.pointerType !== "mouse";
+        const startX = event.clientX;
+        const startY = event.clientY;
+        let dragging = false;
+        let ghost = null;
+        let currentTarget = null;
+        let holdTimer = null;
+        let lastX = startX;
+        let lastY = startY;
+
+        function beginDrag(x, y) {
+          dragging = true;
+          onDragChange(true);
+          el.classList.add("dragging");
+          document.body.classList.add("dnd-active");
+          const rect = el.getBoundingClientRect();
+          ghost = el.cloneNode(true);
+          ghost.classList.add("drag-ghost");
+          ghost.style.width = `${rect.width}px`;
+          ghost.style.left = `${rect.left}px`;
+          ghost.style.top = `${rect.top}px`;
+          ghost.dataset.dx = String(x - rect.left);
+          ghost.dataset.dy = String(y - rect.top);
+          document.body.append(ghost);
+        }
+
+        function updateTarget(x, y) {
+          const hit = document.elementFromPoint(x, y);
+          const container = hit ? hit.closest(dropSelector) : null;
+          if (container !== currentTarget) {
+            if (currentTarget) currentTarget.classList.remove("drag-over");
+            currentTarget = container;
+            if (currentTarget) currentTarget.classList.add("drag-over");
+          }
+        }
+
+        function onMove(moveEvent) {
+          if (moveEvent.pointerId !== pointerId) return;
+          const x = moveEvent.clientX;
+          const y = moveEvent.clientY;
+
+          if (!dragging) {
+            const dist = Math.hypot(x - startX, y - startY);
+            if (!isTouch) {
+              if (dist > 4) beginDrag(x, y);
+              else return;
+            } else {
+              if (holdTimer && dist > 10) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+              }
+              manualScroll(el, lastY - y);
+              lastX = x;
+              lastY = y;
+              return;
+            }
+          }
+
+          moveEvent.preventDefault();
+          if (ghost) {
+            ghost.style.left = `${x - Number(ghost.dataset.dx)}px`;
+            ghost.style.top = `${y - Number(ghost.dataset.dy)}px`;
+          }
+          updateTarget(x, y);
+          lastX = x;
+          lastY = y;
+        }
+
+        function finish(dropped) {
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+          document.removeEventListener("pointercancel", onCancel);
+          if (holdTimer) clearTimeout(holdTimer);
+          if (dragging) {
+            el.classList.remove("dragging");
+            document.body.classList.remove("dnd-active");
+            if (currentTarget) currentTarget.classList.remove("drag-over");
+            if (ghost) ghost.remove();
+            onDragChange(false);
+            if (dropped && currentTarget) {
+              onDrop(currentTarget, computeInsertion(currentTarget, lastX, lastY));
+            }
+          }
+          dragging = false;
+          ghost = null;
+          currentTarget = null;
+        }
+
+        function onUp(upEvent) {
+          if (upEvent.pointerId !== pointerId) return;
+          finish(true);
+        }
+
+        function onCancel(cancelEvent) {
+          if (cancelEvent.pointerId !== pointerId) return;
+          finish(false);
+        }
+
+        if (isTouch) {
+          holdTimer = setTimeout(() => {
+            holdTimer = null;
+            beginDrag(lastX, lastY);
+          }, 320);
+        }
+
+        document.addEventListener("pointermove", onMove);
+        document.addEventListener("pointerup", onUp);
+        document.addEventListener("pointercancel", onCancel);
+      });
+    }
+
     // ── обработчики ─────────────────────────────────────────────────────
 
     form.addEventListener("submit", (event) => {
@@ -1427,7 +2053,7 @@
         return;
       }
 
-      if (addTask(weekDates()[Number(daySelect.value)], title)) {
+      if (addTask(daySelect.value, title)) {
         taskInput.value = "";
         taskInput.focus();
       }
@@ -1499,6 +2125,7 @@
     });
 
     applyTheme(document.documentElement.dataset.theme || localStorage.getItem(themeKey) || "light");
+    dailyQuote.textContent = dayQuotes[(new Date().getDay() + 6) % 7];
 
     noteFields.forEach((field) => {
       field.addEventListener("input", () => {
@@ -1509,6 +2136,38 @@
       });
     });
 
+    focusForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!focusDate) return;
+      const title = focusInput.value.trim();
+      if (!title) {
+        focusInput.focus();
+        return;
+      }
+      if (addTask(focusDate, title)) {
+        focusInput.value = "";
+        renderFocus();
+        focusInput.focus();
+      }
+    });
+
+    focusDayBtn.addEventListener("click", () => {
+      const todayIso = toISO(new Date());
+      if (weekStart !== mondayISO(new Date())) {
+        weekStart = mondayISO(new Date());
+        syncWeek();
+      }
+      openFocus(todayIso);
+    });
+
+    focusClose.addEventListener("click", closeFocus);
+    focusModal.addEventListener("click", (event) => {
+      if (event.target === focusModal) closeFocus();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !focusModal.hidden) closeFocus();
+    });
+
     function applyTheme(theme) {
       document.documentElement.dataset.theme = theme;
       themeToggle.textContent = theme === "dark" ? "☀️ Светлая тема" : "🌙 Тёмная тема";
@@ -1517,16 +2176,35 @@
       } catch {}
     }
 
-    function moveIncomplete(date) {
+    async function moveIncomplete(date, anchor) {
       const next = addDays(date, 1);
-      let order = nextTaskOrder(next);
-      tasks = tasks.map((t) => t.date === date && !t.done ? { ...t, date: next, order: order++ } : t);
+      const candidates = sortedTasksForDate(date).filter((t) => !t.done);
+      for (const t of candidates) {
+        const movedCount = (Number(t.movedCount) || 0) + 1;
+        if (movedCount >= 2) {
+          const choice = await askActuality(t, movedCount, anchor);
+          if (choice === "delete") {
+            tasks = tasks.filter((x) => x.id !== t.id);
+            continue;
+          }
+          if (choice !== "move") continue;
+        }
+        const order = nextTaskOrder(next);
+        tasks = tasks.map((x) => x.id === t.id ? {
+          ...x,
+          date: next,
+          originalDate: x.originalDate || x.date,
+          movedCount,
+          order
+        } : x);
+      }
       saveAndRender();
     }
 
     function saveAndRender() {
       save(STORE.tasks, tasks);
       render();
+      renderFocus();
     }
 
     // ── отрисовка ───────────────────────────────────────────────────────
@@ -1534,15 +2212,29 @@
     function buildDaySelect() {
       const previous = daySelect.value;
       daySelect.replaceChildren();
-      weekDates().forEach((date, index) => {
-        const option = document.createElement("option");
-        option.value = String(index);
-        option.textContent = `${dayNames[index]}, ${fmtShort(date)}`;
-        daySelect.append(option);
-      });
+      const dates = selectableDates();
+      for (let weekOffset = 0; weekOffset < 5; weekOffset++) {
+        const group = document.createElement("optgroup");
+        group.label = weekOffset === 0 ? "Эта неделя" : weekOffset === 1 ? "Следующая неделя" : `Через ${weekOffset} недели`;
+        dates.slice(weekOffset * 7, weekOffset * 7 + 7).forEach((date, index) => {
+          const option = document.createElement("option");
+          option.value = date;
+          option.textContent = `${dayNames[index]}, ${fmtShort(date)}`;
+          group.append(option);
+        });
+        daySelect.append(group);
+      }
+      const available = dates.includes(previous);
+      if (available) {
+        daySelect.value = previous;
+        return;
+      }
       const todayIso = toISO(new Date());
-      const todayIdx = weekDates().indexOf(todayIso);
-      daySelect.value = todayIdx >= 0 ? String(todayIdx) : (previous || "0");
+      if (dates.includes(todayIso)) {
+        daySelect.value = todayIso;
+        return;
+      }
+      daySelect.value = dates[0];
     }
 
     function syncWeek() {
@@ -1559,6 +2251,96 @@
       });
       render();
       renderHabits();
+    }
+
+    function dayIndexFromDate(date) {
+      return (fromISO(date).getDay() + 6) % 7;
+    }
+
+    function openFocus(date) {
+      focusDate = date;
+      focusModal.hidden = false;
+      document.body.classList.add("modal-open");
+      renderFocus();
+      focusInput.focus();
+    }
+
+    function closeFocus() {
+      focusDate = "";
+      focusModal.hidden = true;
+      document.body.classList.remove("modal-open");
+    }
+
+    function renderFocus() {
+      if (!focusDate || focusModal.hidden) return;
+      const index = dayIndexFromDate(focusDate);
+      const dayTasks = sortedTasksForDate(focusDate);
+      const stats = dayStats(focusDate);
+      focusTitle.textContent = `Фокус дня: ${dayNames[index]}`;
+      focusSubtitle.textContent = `${fmtShort(focusDate)} · выполнено ${stats.done} из ${stats.total}`;
+      focusList.replaceChildren();
+
+      if (dayTasks.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Свободный день";
+        focusList.append(empty);
+        return;
+      }
+
+      dayTasks.forEach((task) => {
+        const row = document.createElement("article");
+        row.className = `focus-task${task.done ? " done" : ""}${task.movedCount ? " moved" : ""}`;
+
+        const edit = document.createElement("input");
+        edit.type = "text";
+        edit.className = "focus-edit";
+        edit.maxLength = 120;
+        edit.value = task.time ? `${task.time} ${task.title}` : task.title;
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "delete";
+        remove.title = "Удалить задачу";
+        remove.setAttribute("aria-label", "Удалить задачу");
+        remove.textContent = "×";
+
+        row.addEventListener("click", (event) => {
+          if (event.target.closest("input, button")) return;
+          updateTask(task.id, { done: !task.done });
+          renderFocus();
+        });
+
+        const commitEdit = () => {
+          const parsed = parseTaskInput(edit.value);
+          if (!parsed.title) {
+            edit.value = task.time ? `${task.time} ${task.title}` : task.title;
+            return;
+          }
+          updateTask(task.id, { title: parsed.title, time: parsed.time });
+          renderFocus();
+        };
+        edit.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            edit.blur();
+          }
+          if (event.key === "Escape") {
+            edit.value = task.time ? `${task.time} ${task.title}` : task.title;
+            edit.blur();
+          }
+        });
+        edit.addEventListener("blur", commitEdit);
+
+        remove.addEventListener("click", (event) => {
+          event.stopPropagation();
+          deleteTask(task.id);
+          renderFocus();
+        });
+
+        row.append(edit, remove);
+        focusList.append(row);
+      });
     }
 
     function renderPrios(container, date) {
@@ -1606,7 +2388,6 @@
         const chip = document.createElement("button");
         chip.type = "button";
         chip.className = "chip";
-        chip.draggable = true;
         chip.dataset.date = date;
         chip.dataset.prioIndex = String(index);
         chip.title = "Изменить приоритет";
@@ -1615,18 +2396,23 @@
         const label = document.createElement("span");
         label.textContent = text;
         chip.append(num, label);
+        let chipDragged = false;
         chip.addEventListener("click", () => {
+          if (chipDragged) return;
           const input = editor(index);
           chip.replaceWith(input);
           input.focus();
           input.select();
         });
-        chip.addEventListener("dragstart", (event) => {
-          chip.classList.add("dragging");
-          event.dataTransfer.effectAllowed = "move";
-          event.dataTransfer.setData("application/json", JSON.stringify({ type: "priority", date, index }));
+        attachPointerDrag(chip, {
+          dropSelector: ".prios",
+          computeInsertion: (target, x, y) => beforePriorityIndexFromPoint(target, x, y),
+          onDrop: (target, beforeIndex) => movePriority(date, index, target.dataset.date, beforeIndex),
+          onDragChange: (isDragging) => {
+            chipDragged = isDragging || chipDragged;
+            if (!isDragging) setTimeout(() => { chipDragged = false; }, 0);
+          }
         });
-        chip.addEventListener("dragend", () => chip.classList.remove("dragging"));
         container.append(chip);
       });
 
@@ -1636,31 +2422,61 @@
         add.className = "add-prio";
         add.textContent = "+ приоритет";
         add.addEventListener("click", () => {
-          const input = editor(list.length);
-          add.replaceWith(input);
-          input.focus();
+          const picker = document.createElement("div");
+          picker.className = "prio-picker";
+          const taskList = document.createElement("div");
+          taskList.className = "prio-picker-list";
+          const dayTasks = sortedTasksForDate(date).filter((task) => !list.includes(task.title));
+          const available = 3 - list.length;
+
+          if (dayTasks.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "В этом дне нет задач для приоритета";
+            taskList.append(empty);
+          } else {
+            dayTasks.forEach((task) => {
+              const label = document.createElement("label");
+              label.className = "prio-option";
+              const checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.value = task.title;
+              const text = document.createElement("span");
+              text.textContent = task.time ? `${task.time} ${task.title}` : task.title;
+              label.append(checkbox, text);
+              taskList.append(label);
+            });
+          }
+
+          const actions = document.createElement("div");
+          actions.className = "prio-picker-actions";
+          const cancel = document.createElement("button");
+          cancel.type = "button";
+          cancel.className = "mini-btn";
+          cancel.textContent = "Отмена";
+          const apply = document.createElement("button");
+          apply.type = "button";
+          apply.className = "mini-btn primary";
+          apply.textContent = "Выбрать";
+          actions.append(cancel, apply);
+          picker.append(taskList, actions);
+
+          picker.addEventListener("change", () => {
+            const selected = [...picker.querySelectorAll("input:checked")];
+            if (selected.length <= available) return;
+            selected[selected.length - 1].checked = false;
+          });
+          cancel.addEventListener("click", () => render());
+          apply.addEventListener("click", () => {
+            const selected = [...picker.querySelectorAll("input:checked")].map((input) => input.value);
+            if (selected.length) setPrios(date, [...list, ...selected]);
+            render();
+          });
+
+          add.replaceWith(picker);
         });
         container.append(add);
       }
-
-      container.addEventListener("dragover", (event) => {
-        if (!event.dataTransfer.types.includes("application/json")) return;
-        event.preventDefault();
-        container.classList.add("drag-over");
-      });
-      container.addEventListener("dragleave", () => container.classList.remove("drag-over"));
-      container.addEventListener("drop", (event) => {
-        container.classList.remove("drag-over");
-        let payload;
-        try {
-          payload = JSON.parse(event.dataTransfer.getData("application/json"));
-        } catch {
-          return;
-        }
-        if (!payload || payload.type !== "priority") return;
-        event.preventDefault();
-        movePriority(payload.date, Number(payload.index), date, beforePriorityIndexFromPoint(container, event.clientX, event.clientY));
-      });
     }
 
     function render() {
@@ -1669,8 +2485,7 @@
 
       weekDates().forEach((date, index) => {
         const dayTasks = sortedTasksForDate(date);
-        const doneCount = dayTasks.filter((t) => t.done).length;
-        const pending = dayTasks.length - doneCount;
+        const pending = dayTasks.filter((t) => !t.done).length;
 
         const section = document.createElement("section");
         section.className = date === todayIso ? "day today" : "day";
@@ -1690,18 +2505,17 @@
                   </svg>
                 </button>
               ` : ""}
-              <span class="count">${doneCount}/${dayTasks.length}</span>
             </div>
           </div>
           <div class="prios"></div>
           <div class="tasks"></div>
+          <div class="quick-add-slot"></div>
         `;
 
         const moveButton = section.querySelector(".move");
         if (moveButton) {
-          moveButton.addEventListener("click", () => moveIncomplete(date));
+          moveButton.addEventListener("click", () => moveIncomplete(date, section));
         }
-
         renderPrios(section.querySelector(".prios"), date);
 
         const list = section.querySelector(".tasks");
@@ -1715,25 +2529,6 @@
         } else {
           dayTasks.forEach((task) => list.append(createTask(task)));
         }
-
-        list.addEventListener("dragover", (event) => {
-          if (!event.dataTransfer.types.includes("application/json")) return;
-          event.preventDefault();
-          list.classList.add("drag-over");
-        });
-        list.addEventListener("dragleave", () => list.classList.remove("drag-over"));
-        list.addEventListener("drop", (event) => {
-          list.classList.remove("drag-over");
-          let payload;
-          try {
-            payload = JSON.parse(event.dataTransfer.getData("application/json"));
-          } catch {
-            return;
-          }
-          if (!payload || payload.type !== "task") return;
-          event.preventDefault();
-          moveTask(payload.id, date, beforeTaskIdFromPoint(list, event.clientY));
-        });
 
         section.addEventListener("click", (event) => {
           if (event.target.closest("button, input, textarea, select, label, .task, .chip, .add-prio")) return;
@@ -1752,7 +2547,7 @@
             committed = true;
             const value = input.value.trim();
             if (saveTask && value) addTask(date, value);
-            else input.remove();
+            else input.closest(".quick-add-slot").replaceChildren();
           };
 
           input.addEventListener("keydown", (keyEvent) => {
@@ -1766,7 +2561,7 @@
             }
           });
           input.addEventListener("blur", () => close(Boolean(input.value.trim())));
-          section.append(input);
+          section.querySelector(".quick-add-slot").append(input);
           input.focus();
         });
 
@@ -1779,10 +2574,7 @@
 
     function renderChart() {
       const todayIso = toISO(new Date());
-      const perDay = weekDates().map((date) => {
-        const dayTasks = tasks.filter((t) => t.date === date);
-        return { total: dayTasks.length, done: dayTasks.filter((t) => t.done).length };
-      });
+      const perDay = weekDates().map((date) => dayStats(date));
       const max = Math.max(1, ...perDay.map((d) => d.total));
 
       chartBars.replaceChildren();
@@ -1791,12 +2583,12 @@
       perDay.forEach((day, index) => {
         const date = weekDates()[index];
         const slot = document.createElement("div");
-        slot.className = "chart-slot";
-        slot.title = `${dayNames[index]}, ${fmtShort(date)}: выполнено ${day.done} из ${day.total}`;
+        slot.className = day.debt.length ? "chart-slot has-debt" : "chart-slot";
+        slot.title = `${dayNames[index]}, ${fmtShort(date)}: выполнено ${day.done} из ${day.total}${day.debt.length ? `, актуальных переносов из этого дня: ${day.debt.length}` : ""}`;
 
         const value = document.createElement("span");
         value.className = "chart-value";
-        value.textContent = day.total > 0 ? String(day.done) : "";
+        value.textContent = day.total > 0 ? `${day.pct}%` : "";
 
         const track = document.createElement("div");
         track.className = "chart-track";
@@ -1848,8 +2640,16 @@
         del.textContent = "✕";
         del.title = "Удалить привычку";
         del.setAttribute("aria-label", `Удалить привычку «${habit.title}»`);
-        del.addEventListener("click", () => {
-          if (!confirm(`Удалить привычку «${habit.title}»?`)) return;
+        del.addEventListener("click", async () => {
+          const choice = await showConfirm({
+            anchor: name,
+            message: `Удалить привычку «${habit.title}»? Отметки за неделю тоже сотрутся.`,
+            actions: [
+              { label: "Удалить", kind: "danger", value: "delete" },
+              { label: "Отмена", value: null }
+            ]
+          });
+          if (choice !== "delete") return;
           habits = habits.filter((item) => item.id !== habit.id);
           save(STORE.habits, habits);
           renderHabits();
@@ -1901,36 +2701,87 @@
       });
     }
 
+    function startTaskEdit(node, task) {
+      if (node.querySelector(".task-edit")) return;
+      const body = node.querySelector(".task-body");
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "task-edit";
+      input.maxLength = 120;
+      input.autocomplete = "off";
+      input.value = task.time ? `${task.time} ${task.title}` : task.title;
+
+      let committed = false;
+      const commit = (saveIt) => {
+        if (committed) return;
+        committed = true;
+        if (saveIt) {
+          const parsed = parseTaskInput(input.value);
+          if (parsed.title) {
+            updateTask(task.id, { title: parsed.title, time: parsed.time });
+            return;
+          }
+        }
+        render();
+      };
+
+      input.addEventListener("click", (event) => event.stopPropagation());
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          commit(true);
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          commit(false);
+        }
+      });
+      input.addEventListener("blur", () => commit(true));
+
+      body.replaceWith(input);
+      input.focus();
+      input.select();
+    }
+
     function createTask(task) {
       const node = template.content.firstElementChild.cloneNode(true);
-      const checkbox = node.querySelector("input");
       const text = node.querySelector(".text");
       const time = node.querySelector(".task-time");
+      const editButton = node.querySelector(".edit-task");
       const removeButton = node.querySelector(".delete");
 
-      node.draggable = true;
       node.dataset.taskId = task.id;
       node.classList.toggle("done", task.done);
-      checkbox.checked = task.done;
+      node.classList.toggle("moved", (Number(task.movedCount) || 0) > 0);
       text.textContent = task.title;
       time.hidden = !task.time;
       time.textContent = task.time || "";
+      let wasDragged = false;
 
-      node.addEventListener("dragstart", (event) => {
-        node.classList.add("dragging");
-        event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.setData("application/json", JSON.stringify({ type: "task", id: task.id }));
+      attachPointerDrag(node, {
+        dropSelector: ".tasks",
+        computeInsertion: (target, x, y) => beforeTaskIdFromPoint(target, y),
+        onDrop: (target, beforeId) => moveTask(task.id, target.dataset.date, beforeId, target),
+        onDragChange: (isDragging) => {
+          wasDragged = isDragging || wasDragged;
+          if (!isDragging) setTimeout(() => { wasDragged = false; }, 0);
+        }
       });
-      node.addEventListener("dragend", () => node.classList.remove("dragging"));
 
-      checkbox.addEventListener("change", () => {
-        tasks = tasks.map((item) => item.id === task.id ? { ...item, done: checkbox.checked } : item);
-        saveAndRender();
+      node.addEventListener("click", () => {
+        if (wasDragged) return;
+        if (node.querySelector(".task-edit")) return;
+        updateTask(task.id, { done: !task.done });
       });
 
-      removeButton.addEventListener("click", () => {
-        tasks = tasks.filter((item) => item.id !== task.id);
-        saveAndRender();
+      editButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        startTaskEdit(node, task);
+      });
+
+      removeButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        deleteTask(task.id);
       });
 
       return node;
@@ -1938,13 +2789,10 @@
 
     function renderProgress() {
       const dates = weekDates();
-      const weekTasks = tasks.filter((t) => dates.includes(t.date));
-      const total = weekTasks.length;
-      const done = weekTasks.filter((t) => t.done).length;
+      const stats = dates.map((date) => dayStats(date));
+      const total = stats.reduce((sum, day) => sum + day.total, 0);
+      const done = stats.reduce((sum, day) => sum + day.done, 0);
       const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-
-      progressNumber.textContent = `${done}/${total}`;
-      progressText.textContent = total === 0 ? "Пока нет задач" : `Выполнено ${pct}%`;
 
       progressRing.style.setProperty("--p", pct);
       ringPct.textContent = `${pct}%`;
